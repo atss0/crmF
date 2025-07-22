@@ -23,7 +23,7 @@ import { useAuth } from "../contexts/AuthContext"
 import { getMusteriler } from '../services/musteriService'
 import { getFirsatlar } from "../services/firsatService"
 import { getTasks } from '../services/taskService'
-import { getProducts } from '../services/productService'  
+import { getProducts } from '../services/productService'
 // import { getInvoices }       from '../services/invoiceService' 
 
 interface DashboardStats {
@@ -140,10 +140,14 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
             title="Toplam Stok Değeri"
-            value={`$${stats.totalRevenue.toLocaleString()}`}
+            value={`₺${stats.totalRevenue.toLocaleString()}`}
             change="+12.5%"
             changeType="positive"
-            icon={<DollarSign className="w-6 h-6" />}
+            icon={
+              <span className="w-6 h-6 flex items-center justify-center text-white text-lg font-bold">
+                ₺
+              </span>
+            }
             gradient="from-green-500 to-emerald-600"
             onClick={() => navigate("/products")}
           />

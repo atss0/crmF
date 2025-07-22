@@ -431,7 +431,7 @@ function OpportunityCard({ opportunity, onEdit, onDelete, onMove }: OpportunityC
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-1">
           <span className="w-4 h-4 text-green-600 text-sm font-semibold flex items-center justify-center">₺</span>
-          <span className="font-bold text-green-600">${opportunity.value.toLocaleString()}</span>
+          <span className="font-bold text-green-600">₺{opportunity.value.toLocaleString()}</span>
         </div>
         {opportunity.probability && (
           <span
