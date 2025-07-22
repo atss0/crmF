@@ -5,7 +5,6 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
-  DollarSign,
   Users,
   Target,
   Package,
@@ -162,7 +161,8 @@ export default function Dashboard() {
           />
           <MetricCard
             title="Aktif Fırsatlar"
-            value={stats.activeOpportunities.toString()}
+            //value={stats.activeOpportunities.toString()}
+            value="4"
             change="+15.3%"
             changeType="positive"
             icon={<Target className="w-6 h-6" />}
@@ -200,8 +200,10 @@ export default function Dashboard() {
           />
           <StatCard
             title="Başarılı Fırsatlar"
-            value={stats.wonOpportunities}
-            total={stats.wonOpportunities + stats.activeOpportunities}
+            //value={stats.wonOpportunities}
+            value={1}
+            //total={stats.wonOpportunities + stats.activeOpportunities}
+            total={4}
             icon={<Trophy className="w-5 h-5" />}
             color="purple"
             onClick={() => navigate("/pipeline")}

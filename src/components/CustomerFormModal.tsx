@@ -281,7 +281,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                 >
                   <option value="active">Aktif</option>
-                  <option value="inactive">İnaktif</option>
+                  <option value="inactive">Pasif</option>
                   <option value="vip">VIP</option>
                 </select>
               </div>

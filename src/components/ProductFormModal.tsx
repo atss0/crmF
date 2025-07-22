@@ -649,7 +649,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: any
                       },
                       {
                         value: "inactive" as ProductStatus,
-                        label: "İnaktif",
+                        label: "Pasif",
                         description: "Ürün Müşterler İçin Gizlenmiş",
                       },
                       {
