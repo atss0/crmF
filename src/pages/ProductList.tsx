@@ -94,15 +94,16 @@ export default function ProductList() {
     status?: "active" | "inactive" | "out_of_stock";
     lastUpdated?: string;
   }) => {
+    console.log(data)
     if (editingProduct) {
       const updated = await updateProduct(editingProduct.id, {
         ad: data.name,
         sku: `${data.name.toLowerCase().replace(/\s+/g, "-")}`,
-        description: data.description,
+        aciklama: data.description,
         fiyat: data.price,
         stok: data.stock,
         status: data.status ?? "active",
-        category: data.category,
+        kategori_id: data.category,
         images: data.image ? [data.image] : undefined,
       })
       setProducts((prev: any) => prev.map((p: any) => p.id === updated.id ? mapProduct(updated) : p))
@@ -111,11 +112,11 @@ export default function ProductList() {
       const created = await createProduct({
         ad: data.name,
         sku: `${data.name.toLowerCase().replace(/\s+/g, "-")}`,
-        description: data.description,
+        aciklama: data.description,
         fiyat: data.price,
         stok: data.stock,
         status: "active",
-        category: data.category,
+        kategori_id: data.category,
         images: data.image ? [data.image] : undefined,
       })
       setProducts((prev: any) => [...prev, mapProduct(created)])

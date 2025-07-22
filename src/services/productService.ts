@@ -108,13 +108,13 @@ export const getProduct = async (id: number): Promise<Product> => {
 }
 
 /** POST /products */
-export const createProduct = async (payload: Partial<Product>): Promise<Product> => {
+export const createProduct = async (payload: Partial<any>): Promise<Product> => {
   const res = await axios.post<SingleResponse>('/products', payload)
   return res.data.data
 }
 
 /** PUT /products/:id */
-export const updateProduct = async (id: number, payload: Partial<Product>): Promise<Product> => {
+export const updateProduct = async (id: number, payload: Partial<any>): Promise<Product> => {
   const res = await axios.put<SingleResponse>(`/products/${id}`, payload)
   return res.data.data
 }

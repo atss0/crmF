@@ -21,14 +21,18 @@ import {
   AlertCircle,
   Upload,
   Camera,
-  Zap,
   TrendingUp,
   BarChart3,
   Eye,
   CheckCircle,
+  Globe,
+  Smartphone,
+  Megaphone,
+  Paintbrush2,
+  UserCheck,
 } from "lucide-react"
 
-const categories = ["Elektronik", "Giyim", "Kitap", "Ev & Bahçe", "Spor", "Oyuncak", "Güzellik", "Otomotiv"]
+const categories = ["Web Hizmetleri", "Mobil Uygulamalar", "Dijital Pazarlama", "Grafik Tasarım", "Danışmanlık"]
 
 // Define the status type
 type ProductStatus = "active" | "inactive" | "out_of_stock"
@@ -63,13 +67,7 @@ const schema = yup.object().shape({
     .required("Durum Gerekli"),
 })
 
-interface ProductFormModalProps {
-  onClose: () => void
-  onSubmit: (data: ProductFormData & { image?: string; lastUpdated?: string }) => void
-  initialData?: Partial<ProductFormData & { image?: string }>
-}
-
-export default function ProductFormModal({ onClose, onSubmit, initialData }: ProductFormModalProps) {
+export default function ProductFormModal({ onClose, onSubmit, initialData }: any) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedImage, setSelectedImage] = useState<string>("")
@@ -100,7 +98,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
   useEffect(() => {
     if (initialData) {
       reset({
-        name: initialData.name || "",
+        name: initialData.ad || "",
         description: initialData.description || "",
         price: initialData.price || 0,
         stock: initialData.stock || 0,
@@ -130,6 +128,8 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
       image: selectedImage,
       lastUpdated: new Date().toISOString().split("T")[0],
     }
+
+    console.log("Submitted Data:", productData)
 
     onSubmit(productData)
     setIsSubmitting(false)
@@ -181,15 +181,13 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
 
   const getCategoryIcon = (category: string) => {
     const icons: Record<string, React.ReactNode> = {
-      Electronics: <Zap className="w-4 h-4" />,
-      Clothing: <Tag className="w-4 h-4" />,
-      Books: <FileText className="w-4 h-4" />,
-      "Home & Garden": <Package className="w-4 h-4" />,
-      Sports: <TrendingUp className="w-4 h-4" />,
-      Toys: <Sparkles className="w-4 h-4" />,
-      Beauty: <Eye className="w-4 h-4" />,
-      Automotive: <BarChart3 className="w-4 h-4" />,
+      "Web Hizmetleri": <Globe className="w-4 h-4" />,
+      "Mobil Uygulamalar": <Smartphone className="w-4 h-4" />,
+      "Dijital Pazarlama": <Megaphone className="w-4 h-4" />,
+      "Grafik Tasarım": <Paintbrush2 className="w-4 h-4" />,
+      "Danışmanlık": <UserCheck className="w-4 h-4" />,
     }
+
     return icons[category] || <Package className="w-4 h-4" />
   }
 
@@ -600,18 +598,23 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     Ürün Kategorisi <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {categories.map((category) => (
+                    {categories.map((category, index) => (
                       <label key={category} className="cursor-pointer group">
-                        <input {...register("category")} type="radio" value={category} className="sr-only" />
+                        <input
+                          {...register("category")}
+                          type="radio"
+                          value={index + 1} // 1'den başlayan index
+                          className="sr-only"
+                        />
                         <div
-                          className={`p-4 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${watchedValues.category === category
+                          className={`p-4 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${Number(watchedValues.category) === index + 1
                             ? "bg-orange-100 text-orange-800 border-orange-200 shadow-lg"
                             : "border-gray-200 hover:border-orange-300 bg-white hover:bg-orange-50"
                             }`}
                         >
                           <div className="flex flex-col items-center space-y-2">
                             <div
-                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${watchedValues.category === category
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${Number(watchedValues.category) === index + 1
                                 ? "bg-orange-200"
                                 : "bg-gray-100 group-hover:bg-orange-100"
                                 }`}
