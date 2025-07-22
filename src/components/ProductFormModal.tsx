@@ -29,7 +29,7 @@ import {
   CheckCircle,
 } from "lucide-react"
 
-const categories = ["Electronics", "Clothing", "Books", "Home & Garden", "Sports", "Toys", "Beauty", "Automotive"]
+const categories = ["Elektronik", "Giyim", "Kitap", "Ev & Bahçe", "Spor", "Oyuncak", "Güzellik", "Otomotiv"]
 
 // Define the status type
 type ProductStatus = "active" | "inactive" | "out_of_stock"
@@ -45,23 +45,23 @@ interface ProductFormData {
 }
 
 const schema = yup.object().shape({
-  name: yup.string().required("Product name is required").min(2, "Name must be at least 2 characters"),
-  description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
+  name: yup.string().required("İsim Yazısı Zorunludur").min(2, "İsim En Az 2 Karaktere Sahip Olmalı"),
+  description: yup.string().required("Açıklama Yazısı Zorunludur").min(10, "Açıklama Yazısı 10 Karakterden Fazla Olmalı"),
   price: yup
     .number()
-    .required("Price is required")
-    .positive("Price must be positive")
-    .min(0.01, "Price must be at least $0.01"),
+    .required("Fiyat Bilgisi Gerekli")
+    .positive("Değeri Pozitif Bir Sayı Olmalı")
+    .min(0.01, "Değeri ₺0.01 Değerinin Üzerinde Olmalı"),
   stock: yup
     .number()
-    .required("Stock is required")
-    .integer("Stock must be a whole number")
-    .min(0, "Stock cannot be negative"),
-  category: yup.string().required("Category is required"),
+    .required("Stok Bilgis Gerekli")
+    .integer("Stok Değeri Bir Tam Sayı Olmalıdır")
+    .min(0, "Stok Değeri Sıfır (0) Değerinden Fazla Olmalı"),
+  category: yup.string().required("Kategori Seçiniz"),
   status: yup
     .string()
     .oneOf(["active", "inactive", "out_of_stock"] as const)
-    .required("Status is required"),
+    .required("Durum Gerekli"),
 })
 
 interface ProductFormModalProps {
@@ -165,19 +165,19 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
   const getStockStatus = (stock: number) => {
     if (stock === 0)
       return {
-        label: "Out of Stock",
+        label: "Stok Dışı",
         color: "text-red-600",
         bg: "bg-red-100",
         icon: <AlertCircle className="w-4 h-4" />,
       }
     if (stock <= 5)
       return {
-        label: "Low Stock",
+        label: "Düşük Stok Miktarı",
         color: "text-yellow-600",
         bg: "bg-yellow-100",
         icon: <TrendingUp className="w-4 h-4" />,
       }
-    return { label: "In Stock", color: "text-green-600", bg: "bg-green-100", icon: <CheckCircle className="w-4 h-4" /> }
+    return { label: "Stokta Mevcut", color: "text-green-600", bg: "bg-green-100", icon: <CheckCircle className="w-4 h-4" /> }
   }
 
   const getCategoryIcon = (category: string) => {
@@ -268,9 +268,9 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                 {isEdit ? <Package className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{isEdit ? "Edit Product" : "Create New Product"}</h2>
+                <h2 className="text-2xl font-bold">{isEdit ? "Ürün Bilgilerini Düzenle" : "Yeni Ürün Ekle"}</h2>
                 <p className="text-orange-100 text-sm">
-                  {isEdit ? "Update product information and settings" : "Add a new product to your inventory"}
+                  {isEdit ? "Ürün bilgilerini ve ayarlarını güncelle" : "Envantere yeni bir ürün ekle"}
                 </p>
               </div>
             </div>
@@ -288,19 +288,17 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
-                      currentStep >= step
-                        ? "bg-white text-orange-600"
-                        : "bg-white/20 text-white border-2 border-white/30"
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${currentStep >= step
+                      ? "bg-white text-orange-600"
+                      : "bg-white/20 text-white border-2 border-white/30"
+                      }`}
                   >
                     {currentStep > step ? <Check className="w-4 h-4" /> : step}
                   </div>
                   {step < 3 && (
                     <div
-                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${
-                        currentStep > step ? "bg-white" : "bg-white/30"
-                      }`}
+                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${currentStep > step ? "bg-white" : "bg-white/30"
+                        }`}
                     />
                   )}
                 </div>
@@ -308,9 +306,9 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
             </div>
             <div className="flex justify-center mt-2">
               <div className="flex space-x-8 text-sm text-orange-100">
-                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Basic Info</span>
-                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Pricing & Stock</span>
-                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Category & Status</span>
+                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Temel Bilgiler</span>
+                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Fiyatlandırma & Stok Sayısı</span>
+                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Kategori & Durum</span>
               </div>
             </div>
           </div>
@@ -326,13 +324,13 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white">
                     <Sparkles className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Basic Information</h3>
-                  <p className="text-gray-500 text-sm">Tell us about your product</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Temel Bilgiler</h3>
+                  <p className="text-gray-500 text-sm">Bize Ürün Hakkında Bilgi Verin</p>
                 </div>
 
                 {/* Product Image Upload */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Product Image</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Ürün Görseli</label>
                   <div className="flex items-start space-x-6">
                     {/* Image Preview */}
                     <div className="flex-shrink-0">
@@ -340,13 +338,13 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                         {selectedImage ? (
                           <img
                             src={selectedImage || "/placeholder.svg"}
-                            alt="Product preview"
+                            alt="Ürün Ön-Gösterimi"
                             className="w-full h-full object-cover"
                           />
                         ) : (
                           <div className="text-center">
                             <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                            <p className="text-xs text-gray-500">No image</p>
+                            <p className="text-xs text-gray-500">Resim Yok</p>
                           </div>
                         )}
                       </div>
@@ -355,19 +353,18 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     {/* Upload Area */}
                     <div className="flex-1">
                       <div
-                        className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 ${
-                          dragActive
-                            ? "border-orange-400 bg-orange-50"
-                            : "border-gray-300 hover:border-orange-400 hover:bg-orange-50"
-                        }`}
+                        className={`border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 ${dragActive
+                          ? "border-orange-400 bg-orange-50"
+                          : "border-gray-300 hover:border-orange-400 hover:bg-orange-50"
+                          }`}
                         onDragEnter={handleDrag}
                         onDragLeave={handleDrag}
                         onDragOver={handleDrag}
                         onDrop={handleDrop}
                       >
                         <Upload className="w-8 h-8 text-gray-400 mx-auto mb-3" />
-                        <p className="text-sm font-medium text-gray-900 mb-1">Drop your image here, or browse</p>
-                        <p className="text-xs text-gray-500 mb-4">PNG, JPG, GIF up to 10MB</p>
+                        <p className="text-sm font-medium text-gray-900 mb-1">Resminizi buraya bırakın veya göz atın</p>
+                        <p className="text-xs text-gray-500 mb-4">PNG, JPG, GIF türünde en fazla 10MB</p>
                         <input
                           type="file"
                           accept="image/*"
@@ -380,7 +377,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                           className="inline-flex items-center space-x-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-200 cursor-pointer"
                         >
                           <Camera className="w-4 h-4" />
-                          <span>Choose Image</span>
+                          <span>Görsel Seçin</span>
                         </label>
                       </div>
                     </div>
@@ -390,7 +387,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                 {/* Product Name */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Product Name <span className="text-red-500">*</span>
+                    Ürün İsmi <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -398,10 +395,9 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     </div>
                     <input
                       {...register("name")}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-lg ${
-                        errors.name ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                      placeholder="e.g., Wireless Bluetooth Headphones, Cotton T-Shirt"
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-lg ${errors.name ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                        }`}
+                      placeholder="Örneğin, Kablosuz Bluetooth Kulaklıklar, Pamuklu Tişört"
                     />
                     {!errors.name && watchedValues.name && watchedValues.name.length >= 2 && (
                       <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -415,13 +411,13 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                       {errors.name.message}
                     </p>
                   )}
-                  <p className="text-xs text-gray-500 mt-1">{watchedValues.name?.length || 0} characters</p>
+                  <p className="text-xs text-gray-500 mt-1">{watchedValues.name?.length || 0} karakter</p>
                 </div>
 
                 {/* Product Description */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Product Description <span className="text-red-500">*</span>
+                    Ürün Açıklaması <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute top-4 left-4 pointer-events-none">
@@ -430,10 +426,9 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     <textarea
                       {...register("description")}
                       rows={4}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none ${
-                        errors.description ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                      placeholder="Describe your product features, benefits, and specifications in detail..."
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 resize-none ${errors.description ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                        }`}
+                      placeholder="Ürününüzün özelliklerini, faydalarını ve teknik özelliklerini ayrıntılı olarak açıklayın..."
                     />
                   </div>
                   <div className="flex justify-between items-center mt-2">
@@ -444,7 +439,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                       </p>
                     ) : (
                       <p className="text-gray-500 text-sm">
-                        {watchedValues.description?.length || 0} characters (minimum 10 required)
+                        {watchedValues.description?.length || 0} karakter (en az 10 karakter olmalı)
                       </p>
                     )}
                   </div>
@@ -457,30 +452,31 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
               <div className="space-y-6">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white">
-                    <DollarSign className="w-4 h-4" />
+                    <span className="text-lg font-bold">₺</span>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Pricing & Inventory</h3>
-                  <p className="text-gray-500 text-sm">Set your product price and stock levels</p>
+
+                  <h3 className="text-xl font-semibold text-gray-900">Fiyatlandırma & Envanter Bilgisi</h3>
+                  <p className="text-gray-500 text-sm">Ürününüzün fiyatını ve stok seviyelerini belirleyin</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Price */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Product Price <span className="text-red-500">*</span>
+                      Ürün Fiyatı <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <DollarSign className="h-6 w-6 text-gray-400" />
+                        <span className="h-6 w-6 text-gray-400 text-xl font-semibold">₺</span>
                       </div>
+
                       <input
                         {...register("price")}
                         type="number"
                         min="0.01"
                         step="0.01"
-                        className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-xl font-bold ${
-                          errors.price ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                        }`}
+                        className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-xl font-bold ${errors.price ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                          }`}
                         placeholder="0.00"
                       />
                       {!errors.price && watchedValues.price > 0 && (
@@ -498,10 +494,10 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     {watchedValues.price > 0 && (
                       <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
                         <p className="text-green-800 font-semibold text-lg">
-                          ${Number(watchedValues.price).toLocaleString()} USD
+                          ₺{Number(watchedValues.price).toLocaleString()} TL
                         </p>
                         <p className="text-green-600 text-sm">
-                          Tax (10%): ${(Number(watchedValues.price) * 0.1).toFixed(2)}
+                          Tax (10%): ₺{(Number(watchedValues.price) * 0.1).toFixed(2)}
                         </p>
                       </div>
                     )}
@@ -510,7 +506,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   {/* Stock */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Stock Quantity <span className="text-red-500">*</span>
+                      Stok Miktarı <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -521,9 +517,8 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                         type="number"
                         min="0"
                         step="1"
-                        className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-xl font-bold ${
-                          errors.stock ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                        }`}
+                        className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-xl font-bold ${errors.stock ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                          }`}
                         placeholder="0"
                       />
                       {!errors.stock && watchedValues.stock >= 0 && (
@@ -550,7 +545,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                               <div>
                                 <p className={`font-semibold ${stockStatus.color}`}>{stockStatus.label}</p>
                                 <p className={`text-sm ${stockStatus.color} opacity-75`}>
-                                  {Number(watchedValues.stock)} units available
+                                  {Number(watchedValues.stock)} adet
                                 </p>
                               </div>
                             </div>
@@ -566,22 +561,22 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200">
                     <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                       <BarChart3 className="w-5 h-5 text-blue-600" />
-                      <span>Inventory Value</span>
+                      <span>Envanter Değeri</span>
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="text-center">
                         <p className="text-2xl font-bold text-blue-600">
-                          ${(Number(watchedValues.price) * Number(watchedValues.stock)).toLocaleString()}
+                          ₺{(Number(watchedValues.price) * Number(watchedValues.stock)).toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-600">Total Value</p>
+                        <p className="text-sm text-gray-600">Toplam Değer</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-2xl font-bold text-green-600">${Number(watchedValues.price).toFixed(2)}</p>
-                        <p className="text-sm text-gray-600">Unit Price</p>
+                        <p className="text-2xl font-bold text-green-600">₺{Number(watchedValues.price).toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">Birim Fiyatı</p>
                       </div>
                       <div className="text-center">
                         <p className="text-2xl font-bold text-purple-600">{Number(watchedValues.stock)}</p>
-                        <p className="text-sm text-gray-600">Units</p>
+                        <p className="text-sm text-gray-600">Adet</p>
                       </div>
                     </div>
                   </div>
@@ -596,33 +591,31 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white">
                     <Tag className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Category & Status</h3>
-                  <p className="text-gray-500 text-sm">Organize and set product availability</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Kategori & Durum</h3>
+                  <p className="text-gray-500 text-sm">Ürün Durumunu & Kategorsini Düzenleyin ve Ayarlayın</p>
                 </div>
 
                 {/* Category Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-4">
-                    Product Category <span className="text-red-500">*</span>
+                    Ürün Kategorisi <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {categories.map((category) => (
                       <label key={category} className="cursor-pointer group">
                         <input {...register("category")} type="radio" value={category} className="sr-only" />
                         <div
-                          className={`p-4 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${
-                            watchedValues.category === category
-                              ? "bg-orange-100 text-orange-800 border-orange-200 shadow-lg"
-                              : "border-gray-200 hover:border-orange-300 bg-white hover:bg-orange-50"
-                          }`}
+                          className={`p-4 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${watchedValues.category === category
+                            ? "bg-orange-100 text-orange-800 border-orange-200 shadow-lg"
+                            : "border-gray-200 hover:border-orange-300 bg-white hover:bg-orange-50"
+                            }`}
                         >
                           <div className="flex flex-col items-center space-y-2">
                             <div
-                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                watchedValues.category === category
-                                  ? "bg-orange-200"
-                                  : "bg-gray-100 group-hover:bg-orange-100"
-                              }`}
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${watchedValues.category === category
+                                ? "bg-orange-200"
+                                : "bg-gray-100 group-hover:bg-orange-100"
+                                }`}
                             >
                               {getCategoryIcon(category)}
                             </div>
@@ -643,40 +636,38 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                 {/* Status Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-4">
-                    Product Status <span className="text-red-500">*</span>
+                    Ürün Durumu <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
                       {
                         value: "active" as ProductStatus,
-                        label: "Active",
-                        description: "Product is available for sale",
+                        label: "Aktif",
+                        description: "Ürüm Satışa Uygun",
                       },
                       {
                         value: "inactive" as ProductStatus,
-                        label: "Inactive",
-                        description: "Product is hidden from customers",
+                        label: "İnaktif",
+                        description: "Ürün Müşterler İçin Gizlenmiş",
                       },
                       {
                         value: "out_of_stock" as ProductStatus,
-                        label: "Out of Stock",
-                        description: "Product is temporarily unavailable",
+                        label: "Stok Dışı",
+                        description: "Ürün Geçici Olarak Mevcut Değil",
                       },
                     ].map((status) => (
                       <label key={status.value} className="cursor-pointer group">
                         <input {...register("status")} type="radio" value={status.value} className="sr-only" />
                         <div
-                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                            watchedValues.status === status.value
-                              ? getStatusColor(status.value) + " border-current shadow-lg"
-                              : "border-gray-200 hover:border-gray-300 bg-white"
-                          }`}
+                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${watchedValues.status === status.value
+                            ? getStatusColor(status.value) + " border-current shadow-lg"
+                            : "border-gray-200 hover:border-gray-300 bg-white"
+                            }`}
                         >
                           <div className="flex items-center space-x-3">
                             <div
-                              className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                                watchedValues.status === status.value ? "bg-white/20" : "bg-gray-100"
-                              }`}
+                              className={`w-10 h-10 rounded-lg flex items-center justify-center ${watchedValues.status === status.value ? "bg-white/20" : "bg-gray-100"
+                                }`}
                             >
                               {getStatusIcon(status.value)}
                             </div>
@@ -697,7 +688,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
             <div className="bg-gradient-to-r from-gray-50 to-orange-50 rounded-2xl p-6 border border-gray-200">
               <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                 <Sparkles className="w-4 h-4" />
-                <span>Product Preview</span>
+                <span>Ürün Ön Gösterimi</span>
               </h4>
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-start space-x-4">
@@ -719,7 +710,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   {/* Product Info Preview */}
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
-                      <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.name || "Product Name"}</h5>
+                      <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.name || "Ürün İsmi"}</h5>
                       <div className="flex items-center space-x-2">
                         {watchedValues.category && (
                           <span className="inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
@@ -742,18 +733,17 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                       </div>
                     </div>
                     <p className="text-gray-600 mb-4 text-sm">
-                      {watchedValues.description || "Product description will appear here"}
+                      {watchedValues.description || "Ürün Açıklaması Burada Gözükecek"}
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1">
-                        <DollarSign className="w-5 h-5 text-green-600" />
                         <span className="font-bold text-green-600 text-xl">
-                          ${Number(watchedValues.price || 0).toFixed(2)}
+                          ₺{Number(watchedValues.price || 0).toFixed(2)}
                         </span>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">Stock</p>
-                        <p className="font-semibold text-gray-900">{Number(watchedValues.stock || 0)} units</p>
+                        <p className="text-sm text-gray-500">Stok</p>
+                        <p className="font-semibold text-gray-900">{Number(watchedValues.stock || 0)} adet</p>
                       </div>
                     </div>
                   </div>
@@ -769,7 +759,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                   onClick={onClose}
                   className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
                 >
-                  Cancel
+                  Vazgeç
                 </button>
                 {currentStep > 1 && (
                   <button
@@ -777,7 +767,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     onClick={prevStep}
                     className="px-6 py-3 border-2 border-orange-200 text-orange-700 rounded-xl hover:bg-orange-50 transition-colors duration-200 font-medium"
                   >
-                    Previous
+                    Önceki
                   </button>
                 )}
               </div>
@@ -789,7 +779,7 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     disabled={!getStepValidation(currentStep)}
                     className="px-8 py-3 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl hover:from-orange-700 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
                   >
-                    Next Step
+                    Sonraki Adım
                   </button>
                 ) : (
                   <button
@@ -800,12 +790,12 @@ export default function ProductFormModal({ onClose, onSubmit, initialData }: Pro
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Saving Product...</span>
+                        <span>Ürün Kaydediliyor...</span>
                       </>
                     ) : (
                       <>
                         <Save className="w-4 h-4" />
-                        <span>{isEdit ? "Update Product" : "Create Product"}</span>
+                        <span>{isEdit ? "Güncelle" : "Oluştur"}</span>
                       </>
                     )}
                   </button>

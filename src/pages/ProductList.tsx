@@ -224,11 +224,17 @@ export default function ProductList() {
           />
           <StatsCard
             title="Toplam Değer"
-            value={`$${totalValue.toLocaleString()}`}
-            icon={<DollarSign className="w-5 h-5" />}
+            value={`₺${totalValue.toLocaleString()}`}
+            icon={
+              <span className="w-5 h-5 flex items-center justify-center text-white text-xl font-bold">
+                ₺
+              </span>
+            }
             color="purple"
             change="+23%"
           />
+
+
         </div>
 
         {/* Search and Filters */}

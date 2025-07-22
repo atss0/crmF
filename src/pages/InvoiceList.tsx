@@ -30,7 +30,7 @@ export default function InvoiceList() {
   const [showModal, setShowModal] = useState(false)
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState<PaymentStatus | "all">("all") 
+  const [statusFilter, setStatusFilter] = useState<PaymentStatus | "all">("all")
   const [isLoading, setIsLoading] = useState(true)
   const [selectedInvoices, setSelectedInvoices] = useState<number[]>([])
 
@@ -57,7 +57,7 @@ export default function InvoiceList() {
           invoiceNumber: "INV-2024-001",
           customerName: "Acme Corporation",
           customerEmail: "billing@acme.com",
-          customerAddress: "123 Business St, City, State 12345",
+          customerAddress: "Orhangazi, 81620 Düzce",
           items: [
             {
               id: 1,
@@ -282,10 +282,15 @@ export default function InvoiceList() {
           <StatsCard
             title="Toplam Gelir"
             value={`₺${totalRevenue.toLocaleString()}`}
-            icon={<DollarSign className="w-5 h-5" />}
+            icon={
+              <span className="w-5 h-5 text-white text-lg font-bold flex items-center justify-center">
+                ₺
+              </span>
+            }
             color="green"
             change="+23%"
           />
+
           <StatsCard
             title="Bekleyen Faturalar"
             value={`₺${pendingAmount.toLocaleString()}`}
@@ -335,7 +340,7 @@ export default function InvoiceList() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search invoices by number, customer, or email..."
+                  placeholder="Fatura Arama"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 bg-white/50"
@@ -350,17 +355,17 @@ export default function InvoiceList() {
                   onChange={(e) => setStatusFilter(e.target.value as any)}
                   className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white/50"
                 >
-                  <option value="all">All Status</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
-                  <option value="paid">Paid</option>
-                  <option value="overdue">Overdue</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="all">tüm Durumlar</option>
+                  <option value="draft">Taslak</option>
+                  <option value="pending">Askıda</option>
+                  <option value="paid">Ödendi</option>
+                  <option value="overdue">Vadesi Dolmuş</option>
+                  <option value="cancelled">Vazgeçildi</option>
                 </select>
               </div>
               {selectedInvoices.length > 0 && (
                 <div className="text-sm text-gray-600 bg-indigo-50 px-3 py-2 rounded-lg">
-                  {selectedInvoices.length} selected
+                  {selectedInvoices.length} seçildi
                 </div>
               )}
             </div>
@@ -841,7 +846,7 @@ function InvoiceTable({
   const isOverdue = (dueDate: string, status: PaymentStatus) => {
     return status !== "paid" && new Date(dueDate) < new Date()
   }
- 
+
   const handlePrintInvoice = async (invoice: Invoice) => {
     await printInvoice(`pdf-content-${invoice.id}`)
   }
@@ -891,9 +896,8 @@ function InvoiceTable({
           return (
             <div
               key={invoice.id}
-              className={`px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200 group ${
-                isSelected ? "bg-indigo-50/50" : ""
-              } ${overdue ? "border-l-4 border-red-400" : ""}`}
+              className={`px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200 group ${isSelected ? "bg-indigo-50/50" : ""
+                } ${overdue ? "border-l-4 border-red-400" : ""}`}
             >
               <div className="flex items-center">
                 <input
@@ -934,7 +938,7 @@ function InvoiceTable({
                     <div>
                       <p className="font-bold text-gray-900 text-lg">₺{invoice.totalAmount.toLocaleString()}</p>
                       <p className="text-sm text-gray-500">
-                        {invoice.items.length} item{invoice.items.length !== 1 ? "s" : ""}
+                        {invoice.items.length} adet
                       </p>
                     </div>
                   </div>
@@ -954,7 +958,7 @@ function InvoiceTable({
                         {Math.ceil(
                           (new Date().getTime() - new Date(invoice.dueDate).getTime()) / (1000 * 60 * 60 * 24),
                         )}{" "}
-                        days overdue
+                        Gün Gecikmiş
                       </p>
                     )}
                   </div>
@@ -969,7 +973,7 @@ function InvoiceTable({
                     </div>
                     {invoice.paidAt && (
                       <p className="text-xs text-green-600 mt-1">
-                        Paid {new Date(invoice.paidAt).toLocaleDateString()}
+                        Ödendi {new Date(invoice.paidAt).toLocaleDateString()}
                       </p>
                     )}
                   </div>

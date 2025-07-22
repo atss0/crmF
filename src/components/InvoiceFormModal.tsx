@@ -35,45 +35,45 @@ const paymentStatuses: PaymentStatus[] = ["draft", "pending", "paid", "overdue",
 const paymentMethods: PaymentMethod[] = ["credit_card", "bank_transfer", "cash", "check", "paypal"]
 
 const statusLabels: Record<PaymentStatus, string> = {
-  draft: "Draft",
-  pending: "Pending",
-  paid: "Paid",
-  overdue: "Overdue",
-  cancelled: "Cancelled",
+  draft: "taslak",
+  pending: "Askıda",
+  paid: "Başarılı",
+  overdue: "Vadesi Dolmuş",
+  cancelled: "İptal Edildi",
 }
 
 const paymentMethodLabels: Record<PaymentMethod, string> = {
-  credit_card: "Credit Card",
-  bank_transfer: "Bank Transfer",
-  cash: "Cash",
-  check: "Check",
-  paypal: "PayPal",
+  credit_card: "Kredi Kartı",
+  bank_transfer: "Bankadan Havale",
+  cash: "Nakit",
+  check: "Çek",
+  paypal: "Papara",
 }
 
 const schema = yup.object().shape({
-  invoiceNumber: yup.string().required("Invoice number is required"),
-  customerName: yup.string().required("Customer name is required").min(2, "Name must be at least 2 characters"),
-  customerEmail: yup.string().email("Invalid email format"),
+  invoiceNumber: yup.string().required("fatura Numarası Gerekli"),
+  customerName: yup.string().required("Müşteri İsmi Gerekli").min(2, "İsim En Az 2 Karakterden Oluşmalıdır"),
+  customerEmail: yup.string().email("Geçersiz Email Formatı"),
   customerAddress: yup.string(),
-  date: yup.string().required("Invoice date is required"),
-  dueDate: yup.string().required("Due date is required"),
-  status: yup.string().oneOf(paymentStatuses).required("Status is required"),
+  date: yup.string().required("Fatura Tarihi Gerekli"),
+  dueDate: yup.string().required("Bitiş Tarihi Gerekli"),
+  status: yup.string().oneOf(paymentStatuses).required("Durum Bilgisi Gerekli"),
   paymentMethod: yup.string().oneOf(paymentMethods),
   notes: yup.string(),
   items: yup
     .array()
     .of(
       yup.object().shape({
-        productName: yup.string().required("Product name is required"),
+        productName: yup.string().required("Şirket İsmi Gerekli"),
         description: yup.string(),
-        quantity: yup.number().positive("Quantity must be positive").integer().required("Quantity is required"),
-        price: yup.number().positive("Price must be positive").required("Price is required"),
-        tax: yup.number().min(0, "Tax cannot be negative"),
-        discount: yup.number().min(0, "Discount cannot be negative"),
+        quantity: yup.number().positive("Miktar Bilgisi Pozitif Bir Sayı Değerine Sahip Olmalı").integer().required("Miktar Giriniz"),
+        price: yup.number().positive("Fiyat Bilgisi Pozitif Olmalı").required("Fiyat Bilgisi Gerekli"),
+        tax: yup.number().min(0, "Vergi Değeri Negatif Olamaz"),
+        discount: yup.number().min(0, "İndirim Bilgisi Negatif Olamaz"),
       }),
     )
     .required()
-    .min(1, "At least one item is required"),
+    .min(1, "En Az Bir (1) Öğe Gerekli"),
 })
 
 interface InvoiceFormModalProps {
@@ -277,9 +277,9 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                 {isEdit ? <FileText className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{isEdit ? "Edit Invoice" : "Create New Invoice"}</h2>
+                <h2 className="text-2xl font-bold">{isEdit ? "Faturayı Düzenleyin" : "Yeni Fatura"}</h2>
                 <p className="text-indigo-100 text-sm">
-                  {isEdit ? "Update invoice details and settings" : "Generate a professional invoice for your client"}
+                  {isEdit ? "Fatura ayrıntılarını ve ayarlarını güncelleyin" : "Müşteriniz için profesyonel bir fatura oluşturun"}
                 </p>
               </div>
             </div>
@@ -317,9 +317,9 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
             </div>
             <div className="flex justify-center mt-2">
               <div className="flex space-x-8 text-sm text-indigo-100">
-                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Invoice Details</span>
-                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Items & Pricing</span>
-                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Payment & Notes</span>
+                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Fatura Detayı</span>
+                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Öğeler & Fiyatlandırma</span>
+                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Ödeme & Notlar</span>
               </div>
             </div>
           </div>
@@ -335,15 +335,15 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white">
                     <Sparkles className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Invoice Details</h3>
-                  <p className="text-gray-500 text-sm">Basic invoice and customer information</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Fatura Detayı</h3>
+                  <p className="text-gray-500 text-sm">Temel fatura ve müşteri bilgileri</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Invoice Number */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Invoice Number <span className="text-red-500">*</span>
+                      Fatura Numarası <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -373,7 +373,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   {/* Invoice Date */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Invoice Date <span className="text-red-500">*</span>
+                      Fatura Başlangıç Tarihi <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -390,7 +390,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   {/* Due Date */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Due Date <span className="text-red-500">*</span>
+                      Bitiş Tarihi <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -409,13 +409,13 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                 <div className="space-y-6">
                   <h4 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
                     <User className="w-5 h-5" />
-                    <span>Customer Information</span>
+                    <span>Müşteri Bilgileri</span>
                   </h4>
 
                   {/* Customer Name */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-3">
-                      Customer Name <span className="text-red-500">*</span>
+                      Müşteri İsmi <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -445,7 +445,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Customer Email */}
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-3">Customer Email</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">Müşteri Email</label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                           <Mail className="h-5 w-5 text-gray-400" />
@@ -456,7 +456,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                           className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
                             errors.customerEmail ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
                           }`}
-                          placeholder="billing@acme.com"
+                          placeholder="musteri@acme.com"
                         />
                       </div>
                       {errors.customerEmail && (
@@ -470,7 +470,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                   {/* Customer Address */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Customer Address</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Müşteri Adresi</label>
                     <div className="relative">
                       <div className="absolute top-4 left-4 pointer-events-none">
                         <MapPin className="h-5 w-5 text-gray-400" />
@@ -479,7 +479,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         {...register("customerAddress")}
                         rows={3}
                         className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none bg-white"
-                        placeholder="123 Business Street, City, State 12345"
+                        placeholder="Orhangazi, 81620 Düzce"
                       />
                     </div>
                   </div>
@@ -494,8 +494,8 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white">
                     <Package className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Items & Pricing</h3>
-                  <p className="text-gray-500 text-sm">Add products or services to your invoice</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Ögeler & Fiyatlandırma</h3>
+                  <p className="text-gray-500 text-sm">Faturanıza Öge veya hizmet ekleyin</p>
                 </div>
 
                 {/* Invoice Items */}
@@ -503,7 +503,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   {fields.map((field, index) => (
                     <div key={field.id} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                       <div className="flex items-center justify-between mb-4">
-                        <h5 className="font-medium text-gray-900">Item #{index + 1}</h5>
+                        <h5 className="font-medium text-gray-900">Öge #{index + 1}</h5>
                         {fields.length > 1 && (
                           <button
                             type="button"
@@ -519,12 +519,12 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         {/* Product Name */}
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Product/Service <span className="text-red-500">*</span>
+                            Ürün/Hizmet <span className="text-red-500">*</span>
                           </label>
                           <input
                             {...register(`items.${index}.productName`)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                            placeholder="Website Development"
+                            placeholder="Uygulama Geliştirme"
                           />
                           {errors.items?.[index]?.productName && (
                             <p className="text-red-500 text-xs mt-1">{errors.items[index]?.productName?.message}</p>
@@ -533,7 +533,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                         {/* Description */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
                           <input
                             {...register(`items.${index}.description`)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -546,7 +546,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         {/* Quantity */}
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Quantity <span className="text-red-500">*</span>
+                            Miktar <span className="text-red-500">*</span>
                           </label>
                           <input
                             {...register(`items.${index}.quantity`)}
@@ -563,11 +563,11 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         {/* Price */}
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Unit Price <span className="text-red-500">*</span>
+                            Birim Fiyatı <span className="text-red-500">*</span>
                           </label>
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <DollarSign className="h-4 w-4 text-gray-400" />
+                              <span className="h-4 w-4 text-gray-400 text-sm font-semibold flex items-center justify-center">₺</span>
                             </div>
                             <input
                               {...register(`items.${index}.price`)}
@@ -585,10 +585,11 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                         {/* Tax */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Tax</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Vergi</label>
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <DollarSign className="h-4 w-4 text-gray-400" />
+                              <span className="h-4 w-4 text-gray-400 text-sm font-semibold flex items-center justify-center">₺</span>
+
                             </div>
                             <input
                               {...register(`items.${index}.tax`)}
@@ -603,10 +604,10 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                         {/* Discount */}
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Discount</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">İndirim</label>
                           <div className="relative">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                              <DollarSign className="h-4 w-4 text-gray-400" />
+                              <span className="h-4 w-4 text-gray-400 text-sm font-semibold flex items-center justify-center">₺</span>
                             </div>
                             <input
                               {...register(`items.${index}.discount`)}
@@ -623,9 +624,9 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                       {/* Item Total */}
                       <div className="mt-4 pt-4 border-t border-gray-200">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600">Item Total:</span>
+                          <span className="text-sm text-gray-600">Toplam:</span>
                           <span className="font-semibold text-gray-900">
-                            $
+                            ₺
                             {(
                               (Number(watchedItems[index]?.quantity) || 0) * (Number(watchedItems[index]?.price) || 0) -
                               (Number(watchedItems[index]?.discount) || 0) +
@@ -653,7 +654,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                     className="w-full p-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-200 flex items-center justify-center space-x-2 text-gray-600 hover:text-indigo-600"
                   >
                     <Plus className="w-5 h-5" />
-                    <span className="font-medium">Add Another Item</span>
+                    <span className="font-medium">Yeni Öge Ekle</span>
                   </button>
                 </div>
 
@@ -661,27 +662,27 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                 <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-200">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                     <Calculator className="w-5 h-5 text-indigo-600" />
-                    <span>Invoice Summary</span>
+                    <span>Fatura Özeti</span>
                   </h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Subtotal:</span>
-                      <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+                      <span className="text-gray-600">Vergisiz Toplam:</span>
+                      <span className="font-medium text-gray-900">₺{subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Tax:</span>
-                      <span className="font-medium text-gray-900">${taxAmount.toFixed(2)}</span>
+                      <span className="text-gray-600">Vergi:</span>
+                      <span className="font-medium text-gray-900">₺{taxAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Discount:</span>
+                      <span className="text-gray-600">İndirim:</span>
                       <span className="font-medium text-gray-900">
-                        -${watchedItems.reduce((sum, item) => sum + (Number(item.discount) || 0), 0).toFixed(2)}
+                        -₺{watchedItems.reduce((sum, item) => sum + (Number(item.discount) || 0), 0).toFixed(2)}
                       </span>
                     </div>
                     <div className="border-t border-indigo-200 pt-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-semibold text-gray-900">Total:</span>
-                        <span className="text-2xl font-bold text-indigo-600">${totalAmount.toFixed(2)}</span>
+                        <span className="text-lg font-semibold text-gray-900">Toplam:</span>
+                        <span className="text-2xl font-bold text-indigo-600">₺{totalAmount.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -696,15 +697,15 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white">
                     <CreditCard className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Payment & Notes</h3>
-                  <p className="text-gray-500 text-sm">Set payment status and add additional notes</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Ödeme & Notlar</h3>
+                  <p className="text-gray-500 text-sm">Ödeme durumunu ayarlayın ve ek notlar ekleyin</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Payment Status */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-4">
-                      Payment Status <span className="text-red-500">*</span>
+                      Ödeme Durumu <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-1 gap-3">
                       {paymentStatuses.map((status) => (
@@ -728,11 +729,11 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                               <div>
                                 <h4 className="font-semibold">{statusLabels[status]}</h4>
                                 <p className="text-xs opacity-75">
-                                  {status === "draft" && "Invoice is being prepared"}
-                                  {status === "pending" && "Awaiting payment from customer"}
-                                  {status === "paid" && "Payment has been received"}
-                                  {status === "overdue" && "Payment is past due date"}
-                                  {status === "cancelled" && "Invoice has been cancelled"}
+                                  {status === "draft" && "Fatura Hazırlanıyor"}
+                                  {status === "pending" && "Müşteriden ödeme bekleniyor"}
+                                  {status === "paid" && "Ödeme Alındı"}
+                                  {status === "overdue" && "Ödeme Vadesi Dolmuş"}
+                                  {status === "cancelled" && "Fatura İptal Edildi"}
                                 </p>
                               </div>
                             </div>
@@ -744,7 +745,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                   {/* Payment Method */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-4">Payment Method</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-4">Ödeme Yöntemi</label>
                     <div className="grid grid-cols-1 gap-3">
                       {paymentMethods.map((method) => (
                         <label key={method} className="cursor-pointer">
@@ -775,14 +776,14 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                 {/* Notes */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Additional Notes</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Ek Notlar</label>
                   <textarea
                     {...register("notes")}
                     rows={4}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 resize-none bg-white"
                     placeholder="Thank you for your business! Payment terms: Net 30 days."
                   />
-                  <p className="text-xs text-gray-500 mt-2">{watchedValues.notes?.length || 0} characters</p>
+                  <p className="text-xs text-gray-500 mt-2">{watchedValues.notes?.length || 0} karakter</p>
                 </div>
               </div>
             )}
@@ -791,24 +792,24 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
             <div className="bg-gradient-to-r from-gray-50 to-indigo-50 rounded-2xl p-6 border border-gray-200">
               <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                 <Sparkles className="w-4 h-4" />
-                <span>Invoice Preview</span>
+                <span>Fatura Önizleme</span>
               </h4>
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <h5 className="text-2xl font-bold text-gray-900 mb-2">INVOICE</h5>
+                    <h5 className="text-2xl font-bold text-gray-900 mb-2">FATURA</h5>
                     <p className="text-gray-600">{watchedValues.invoiceNumber || "INV-XXXX-XXX"}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">Date: {watchedValues.date || "Not set"}</p>
-                    <p className="text-sm text-gray-600">Due: {watchedValues.dueDate || "Not set"}</p>
+                    <p className="text-sm text-gray-600">Başlangıç: {watchedValues.date || "Ayarlanmamış"}</p>
+                    <p className="text-sm text-gray-600">Bitiş: {watchedValues.dueDate || "Ayarlanmamış"}</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h6 className="font-semibold text-gray-900 mb-2">Bill To:</h6>
-                    <p className="text-gray-700">{watchedValues.customerName || "Customer Name"}</p>
+                    <h6 className="font-semibold text-gray-900 mb-2">Ödenecek Kişi:</h6>
+                    <p className="text-gray-700">{watchedValues.customerName || "Müşteri İsmi"}</p>
                     {watchedValues.customerEmail && (
                       <p className="text-gray-600 text-sm">{watchedValues.customerEmail}</p>
                     )}
@@ -838,12 +839,12 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                           <p className="font-medium text-gray-900">{item.productName || `Item ${index + 1}`}</p>
                           {item.description && <p className="text-sm text-gray-600">{item.description}</p>}
                           <p className="text-sm text-gray-500">
-                            {Number(item.quantity) || 0} × ${(Number(item.price) || 0).toFixed(2)}
+                            {Number(item.quantity) || 0} × ₺{(Number(item.price) || 0).toFixed(2)}
                           </p>
                         </div>
                         <div className="text-right">
                           <p className="font-medium text-gray-900">
-                            $
+                            ₺
                             {(
                               (Number(item.quantity) || 0) * (Number(item.price) || 0) -
                               (Number(item.discount) || 0) +
@@ -857,16 +858,16 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
 
                   <div className="border-t border-gray-200 pt-4 space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Subtotal:</span>
-                      <span className="text-gray-900">${subtotal.toFixed(2)}</span>
+                      <span className="text-gray-600">Vergi Öncesi Tutar:</span>
+                      <span className="text-gray-900">₺{subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Tax:</span>
-                      <span className="text-gray-900">${taxAmount.toFixed(2)}</span>
+                      <span className="text-gray-600">Vergi:</span>
+                      <span className="text-gray-900">₺{taxAmount.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-lg font-bold">
-                      <span className="text-gray-900">Total:</span>
-                      <span className="text-indigo-600">${totalAmount.toFixed(2)}</span>
+                      <span className="text-gray-900">Toplam:</span>
+                      <span className="text-indigo-600">₺{totalAmount.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -887,7 +888,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                   onClick={onClose}
                   className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
                 >
-                  Cancel
+                  Vazgeç
                 </button>
                 {currentStep > 1 && (
                   <button
@@ -895,7 +896,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                     onClick={prevStep}
                     className="px-6 py-3 border-2 border-indigo-200 text-indigo-700 rounded-xl hover:bg-indigo-50 transition-colors duration-200 font-medium"
                   >
-                    Previous
+                    Önceki
                   </button>
                 )}
               </div>
@@ -907,7 +908,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                     disabled={!getStepValidation(currentStep)}
                     className="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
                   >
-                    Next Step
+                    Sonraki Adım
                   </button>
                 ) : (
                   <button
@@ -918,7 +919,7 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Saving Invoice...</span>
+                        <span>Fatura Kaydediliyor...</span>
                       </>
                     ) : (
                       <>

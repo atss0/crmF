@@ -25,11 +25,11 @@ import {
 
 const stages: OpportunityStage[] = ["contacted", "meeting", "proposal", "won", "lost"]
 const stageLabels: Record<OpportunityStage, string> = {
-  contacted: "Initial Contact",
-  meeting: "Meeting Scheduled",
-  proposal: "Proposal Sent",
-  won: "Won",
-  lost: "Lost",
+  contacted: "İlk Temas",
+  meeting: "Toplantısı Planlanan",
+  proposal: "Teklif Gönderildi",
+  won: "Kazanıldı",
+  lost: "Kaybedildi",
 }
 
 const stageColors: Record<OpportunityStage, string> = {
@@ -173,17 +173,15 @@ export default function Pipeline() {
               <div className="flex items-center bg-white/50 rounded-lg border border-gray-200">
                 <button
                   onClick={() => setViewMode("kanban")}
-                  className={`px-3 py-2 text-sm font-medium rounded-l-lg transition-colors duration-200 ${
-                    viewMode === "kanban" ? "bg-purple-600 text-white" : "text-gray-600 hover:text-gray-900"
-                  }`}
+                  className={`px-3 py-2 text-sm font-medium rounded-l-lg transition-colors duration-200 ${viewMode === "kanban" ? "bg-purple-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
                 >
                   Kanban
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`px-3 py-2 text-sm font-medium rounded-r-lg transition-colors duration-200 ${
-                    viewMode === "list" ? "bg-purple-600 text-white" : "text-gray-600 hover:text-gray-900"
-                  }`}
+                  className={`px-3 py-2 text-sm font-medium rounded-r-lg transition-colors duration-200 ${viewMode === "list" ? "bg-purple-600 text-white" : "text-gray-600 hover:text-gray-900"
+                    }`}
                 >
                   Liste
                 </button>
@@ -344,12 +342,12 @@ function PipelineColumn({ stage, opportunities, onEdit, onDelete, onMove }: Pipe
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{stageLabels[stage]}</h3>
-            <p className="text-sm text-gray-500">{opportunities.length} opportunities</p>
+            <p className="text-sm text-gray-500">{opportunities.length} Fırsat(lar)</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm font-medium text-gray-900">${totalValue.toLocaleString()}</p>
-          <p className="text-xs text-gray-500">Total Value</p>
+          <p className="text-sm font-medium text-gray-900">₺{totalValue.toLocaleString()}</p>
+          <p className="text-xs text-gray-500">Toplam Değer</p>
         </div>
       </div>
 
@@ -396,31 +394,29 @@ function OpportunityCard({ opportunity, onEdit, onDelete, onMove }: OpportunityC
 
   return (
     <div
-      className={`bg-white rounded-xl p-4 border-2 hover:shadow-lg transition-all duration-200 group cursor-pointer ${
-        isOverdue ? "border-red-200 bg-red-50/50" : "border-gray-200 hover:border-purple-300"
-      }`}
+      className={`bg-white rounded-xl p-4 border-2 hover:shadow-lg transition-all duration-200 group cursor-pointer ${isOverdue ? "border-red-200 bg-red-50/50" : "border-gray-200 hover:border-purple-300"
+        }`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
       <div className="flex items-start justify-between mb-3">
         <h4 className="font-semibold text-gray-900 text-sm leading-tight">{opportunity.title}</h4>
         <div
-          className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
-            showActions ? "opacity-100" : ""
-          }`}
+          className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${showActions ? "opacity-100" : ""
+            }`}
         >
           <div className="flex items-center space-x-1">
             <button
               onClick={onEdit}
               className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors duration-200"
-              title="Edit opportunity"
+              title="Fırsatı Güncelle"
             >
               <Edit className="w-3 h-3" />
             </button>
             <button
               onClick={onDelete}
               className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors duration-200"
-              title="Delete opportunity"
+              title="Fırsatı Sil"
             >
               <Trash2 className="w-3 h-3" />
             </button>
@@ -435,7 +431,7 @@ function OpportunityCard({ opportunity, onEdit, onDelete, onMove }: OpportunityC
 
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-1">
-          <DollarSign className="w-4 h-4 text-green-600" />
+          <span className="w-4 h-4 text-green-600 text-sm font-semibold flex items-center justify-center">₺</span>
           <span className="font-bold text-green-600">${opportunity.value.toLocaleString()}</span>
         </div>
         {opportunity.probability && (
@@ -455,7 +451,7 @@ function OpportunityCard({ opportunity, onEdit, onDelete, onMove }: OpportunityC
             <Calendar className="w-3 h-3" />
             <span className={isOverdue ? "text-red-600 font-medium" : ""}>
               {new Date(opportunity.expectedCloseDate).toLocaleDateString()}
-              {isOverdue && " (Overdue)"}
+              {isOverdue && " (Süresi Dolmuş)"}
             </span>
           </div>
         )}
@@ -502,13 +498,13 @@ function PipelineList({ opportunities, onEdit, onDelete }: PipelineListProps) {
       {/* Table Header */}
       <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
         <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
-          <div className="col-span-3">Opportunity</div>
-          <div className="col-span-2">Customer</div>
-          <div className="col-span-1">Value</div>
-          <div className="col-span-2">Stage</div>
-          <div className="col-span-1">Probability</div>
-          <div className="col-span-2">Expected Close</div>
-          <div className="col-span-1">Actions</div>
+          <div className="col-span-3">Fırsat</div>
+          <div className="col-span-2">Müşteri</div>
+          <div className="col-span-1">Değer</div>
+          <div className="col-span-2">Aşama</div>
+          <div className="col-span-1">Olasılık</div>
+          <div className="col-span-2">Beklenen Kapanış</div>
+          <div className="col-span-1">Aksiyonlar</div>
         </div>
       </div>
 
@@ -517,8 +513,8 @@ function PipelineList({ opportunities, onEdit, onDelete }: PipelineListProps) {
         {opportunities.length === 0 ? (
           <div className="text-center py-12">
             <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No opportunities found</p>
-            <p className="text-gray-400 text-sm">Try adjusting your search or filters</p>
+            <p className="text-gray-500 text-lg">Herhangi Bir Fırsat Bulunamadı</p>
+            <p className="text-gray-400 text-sm">Aramanızı veya filtrelerinizi ayarlamayı deneyin</p>
           </div>
         ) : (
           opportunities.map((opp) => (
@@ -542,7 +538,7 @@ function PipelineList({ opportunities, onEdit, onDelete }: PipelineListProps) {
                 <div className="col-span-1">
                   <div className="flex items-center space-x-1">
                     <DollarSign className="w-4 h-4 text-green-600" />
-                    <span className="font-semibold text-green-600">${opp.value.toLocaleString()}</span>
+                    <span className="font-semibold text-green-600">₺{opp.value.toLocaleString()}</span>
                   </div>
                 </div>
 
@@ -577,14 +573,14 @@ function PipelineList({ opportunities, onEdit, onDelete }: PipelineListProps) {
                     <button
                       onClick={() => onEdit(opp)}
                       className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors duration-200"
-                      title="Edit opportunity"
+                      title="Fırsatı Düzenleyin"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => onDelete(opp.id)}
                       className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors duration-200"
-                      title="Delete opportunity"
+                      title="Fırsatı Kaldırın"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

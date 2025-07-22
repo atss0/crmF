@@ -7,16 +7,16 @@ import * as yup from "yup"
 import { X, User, Mail, Phone, Building, Tag, Save, UserPlus, Camera, Check } from "lucide-react"
 
 const schema = yup.object().shape({
-  name: yup.string().required("Name is required").min(2, "Name must be at least 2 characters"),
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  phone: yup.string().required("Phone is required").min(10, "Phone must be at least 10 digits"),
+  name: yup.string().required("İsim Gerekli").min(2, "İsim En Az 2 Karaktere Sahip Olmalı"),
+  email: yup.string().email("Geçersiz Email Formatı").required("Email Gerekli"),
+  phone: yup.string().required("Telefon Numarası Gerekli").min(10, "Telefon Numarası En Az 10 Karaktere Sahip Olmalı"),
   company: yup.string(),
   tags: yup.string(),
   status: yup.string().oneOf(["active", "inactive", "vip"]).required("Status is required"),
   totalSpent: yup
     .number()
-    .typeError('Total Spent must be a number')
-    .min(0, 'Cannot be negative')
+    .typeError('Toplam Harcama Değeri Bir Sayı Değerine Sahip Olmalı')
+    .min(0, 'Negatif Sayı Olamaz')
 })
 
 interface CustomerFormModalProps {
@@ -130,9 +130,9 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                 {isEdit ? <User className="w-6 h-6" /> : <UserPlus className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{isEdit ? "Edit Customer" : "Add New Customer"}</h2>
+                <h2 className="text-2xl font-bold">{isEdit ? "Müşteri Düzenleyin" : "Yeni Müşteri Ekleyin"}</h2>
                 <p className="text-blue-100 text-sm">
-                  {isEdit ? "Update customer information" : "Create a new customer profile"}
+                  {isEdit ? "Müşteri Bilgilerini Düzenleyin" : "Yeni Bir Müşteri Profili Oluşturun"}
                 </p>
               </div>
             </div>
@@ -164,8 +164,8 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                 </button>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Profile Picture</h3>
-                <p className="text-sm text-gray-600">Avatar will be generated from the customer's name</p>
+                <h3 className="font-semibold text-gray-900">Profil Görseli</h3>
+                <p className="text-sm text-gray-600">Avatar müşterinin adından oluşturulacak</p>
               </div>
             </div>
 
@@ -174,7 +174,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
               {/* Name Field */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Full Name <span className="text-red-500">*</span>
+                  İsim ve Soyisim <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -184,7 +184,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                     {...register("name")}
                     className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.name ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
                       }`}
-                    placeholder="Enter customer's full name"
+                    placeholder="Müşterinin Adının ve Soyadının Tamamını Girin"
                   />
                   {!errors.name && watchedName && (
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -205,7 +205,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
               {/* Email Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email Address <span className="text-red-500">*</span>
+                  Email Adresi <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -216,7 +216,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                     type="email"
                     className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.email ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
                       }`}
-                    placeholder="customer@example.com"
+                    placeholder="musteri@example.com"
                   />
                 </div>
                 {errors.email && (
@@ -232,7 +232,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
               {/* Phone Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Phone Number <span className="text-red-500">*</span>
+                  Telefon Numarası <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -243,7 +243,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                     type="tel"
                     className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${errors.phone ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
                       }`}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+90 (XXX) XXX XX XX"
                   />
                 </div>
                 {errors.phone && (
@@ -258,7 +258,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
 
               {/* Company Field */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Company</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Şirket</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Building className="h-5 w-5 text-gray-400" />
@@ -266,7 +266,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                   <input
                     {...register("company")}
                     className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
-                    placeholder="Company name (optional)"
+                    placeholder="Şirket İsmi (opsiyonel)"
                   />
                 </div>
               </div>
@@ -274,21 +274,21 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
               {/* Status Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Status <span className="text-red-500">*</span>
+                  Durum <span className="text-red-500">*</span>
                 </label>
                 <select
                   {...register("status")}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="active">Aktif</option>
+                  <option value="inactive">İnaktif</option>
                   <option value="vip">VIP</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Total Spent (USD)
+                  Toplam Harcama (TL)
                 </label>
                 <input
                   type="number"
@@ -305,7 +305,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
 
               {/* Tags Field */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tags</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Etiketler</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Tag className="h-5 w-5 text-gray-400" />
@@ -313,16 +313,16 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                   <input
                     {...register("tags")}
                     className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
-                    placeholder="VIP, Premium, Lead (comma separated)"
+                    placeholder="VIP, Premium, Lead (virgülle ayrılmış)"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Separate multiple tags with commas</p>
+                <p className="text-xs text-gray-500 mt-1">Birden Fazla Etikete Sahip ise Virgül ile Ayırın</p>
               </div>
             </div>
 
             {/* Status Preview */}
             <div className="p-4 bg-gray-50 rounded-xl">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Preview</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Önizleme</h4>
               <div className="flex items-center space-x-3">
                 <div
                   className={`w-8 h-8 rounded-full ${getAvatarColor(watchedName)} flex items-center justify-center text-white text-sm font-bold`}
@@ -330,7 +330,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                   {watchedName ? watchedName.charAt(0).toUpperCase() : "?"}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{watchedName || "Customer Name"}</p>
+                  <p className="font-medium text-gray-900">{watchedName || "Müşteri İsmi"}</p>
                   <div className="flex items-center space-x-2">
                     <span
                       className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(watch("status"))}`}
@@ -339,13 +339,13 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                     </span>
                     {watch("tags") && (
                       <span className="text-xs text-gray-500">
-                        {watch("tags")?.split(",").filter(Boolean).length || 0} tags
+                        {watch("tags")?.split(",").filter(Boolean).length || 0} Etiketler
                       </span>
                     )}
                   </div>
                   <span className="text-xs text-gray-500">
-                    Spent&nbsp;
-                    <strong>${watch('totalSpent')?.toLocaleString()}</strong>
+                    Harcanan&nbsp;
+                    <strong>₺{watch('totalSpent')?.toLocaleString()}</strong>
                   </span>
                 </div>
               </div>
@@ -358,7 +358,7 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                 onClick={onClose}
                 className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
               >
-                Cancel
+                Vazgeç
               </button>
               <button
                 type="submit"
@@ -368,12 +368,12 @@ export default function CustomerFormModal({ onClose, onSubmit, initialData, isEd
                 {isSubmitting ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving...</span>
+                    <span>Kaydediliyor...</span>
                   </>
                 ) : (
                   <>
                     <Save className="w-4 h-4" />
-                    <span>{isEdit ? "Update Customer" : "Create Customer"}</span>
+                    <span>{isEdit ? "Kullanıcı Göncelleyin" : "Kullanıcı Oluşturun"}</span>
                   </>
                 )}
               </button>

@@ -36,11 +36,11 @@ import {
 const stages: OpportunityStage[] = ["contacted", "meeting", "proposal", "won", "lost"]
 
 const stageLabels: Record<OpportunityStage, string> = {
-  contacted: "Initial Contact",
-  meeting: "Meeting Scheduled",
-  proposal: "Proposal Sent",
-  won: "Won",
-  lost: "Lost",
+  contacted: "İlk Temas",
+  meeting: "Toplantı Planlandı",
+  proposal: "Teklif Gönderildi",
+  won: "Kazanıldı",
+  lost: "Kaybedildi",
 }
 
 const stageColors: Record<OpportunityStage, string> = {
@@ -65,18 +65,18 @@ const schema = yup.object().shape({
   title: yup.string().required("Opportunity title is required").min(3, "Title must be at least 3 characters"),
   customerName: yup
     .string()
-    .required("Customer name is required")
-    .min(2, "Customer name must be at least 2 characters"),
+    .required("Müşteri Adı Gerekli")
+    .min(2, "Müşteri Adı 2 Karakterden Fazla Olmalı"),
   value: yup
     .number()
-    .required("Value is required")
-    .positive("Value must be positive")
-    .min(1, "Value must be at least $1"),
-  stage: yup.string().oneOf(stages).required("Stage is required"),
+    .required("Değer Gerekli")
+    .positive("Değer Negatif Bir Sayı İçeremez")
+    .min(1, "Değer ₺1'den Yüksek Olmalı"),
+  stage: yup.string().oneOf(stages).required("Aşama Gerekli"),
   note: yup.string(),
   contactDate: yup.string(),
   expectedCloseDate: yup.string(),
-  probability: yup.number().min(0, "Probability must be at least 0%").max(100, "Probability cannot exceed 100%"),
+  probability: yup.number().min(0, "Olasılık Değeri 0% Değerinden Fazla Olmalı").max(100, "Olasılık Değer 100% Değerinden Az Olmalı"),
   source: yup.string(),
 })
 
@@ -214,9 +214,9 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                 {isEdit ? <Target className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{isEdit ? "Edit Opportunity" : "Create New Opportunity"}</h2>
+                <h2 className="text-2xl font-bold">{isEdit ? "Fırsatı Düzenleyin" : "Fırsat Oluşturun"}</h2>
                 <p className="text-purple-100 text-sm">
-                  {isEdit ? "Update opportunity details and progress" : "Add a new sales opportunity to your pipeline"}
+                  {isEdit ? "Fırsat Ayrıntılarını ve İlerlemeyi Güncelleyin" : "Satış hattınıza yeni bir satış fırsatı ekleyin"}
                 </p>
               </div>
             </div>
@@ -234,19 +234,17 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
-                      currentStep >= step
-                        ? "bg-white text-purple-600"
-                        : "bg-white/20 text-white border-2 border-white/30"
-                    }`}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${currentStep >= step
+                      ? "bg-white text-purple-600"
+                      : "bg-white/20 text-white border-2 border-white/30"
+                      }`}
                   >
                     {currentStep > step ? <Check className="w-4 h-4" /> : step}
                   </div>
                   {step < 3 && (
                     <div
-                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${
-                        currentStep > step ? "bg-white" : "bg-white/30"
-                      }`}
+                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${currentStep > step ? "bg-white" : "bg-white/30"
+                        }`}
                     />
                   )}
                 </div>
@@ -254,9 +252,9 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
             </div>
             <div className="flex justify-center mt-2">
               <div className="flex space-x-8 text-sm text-purple-100">
-                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Basic Info</span>
-                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Pipeline</span>
-                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Details</span>
+                <span className={currentStep === 1 ? "text-white font-medium" : ""}>Temel Bilgiler</span>
+                <span className={currentStep === 2 ? "text-white font-medium" : ""}>Süreç Hattı</span>
+                <span className={currentStep === 3 ? "text-white font-medium" : ""}>Detaylar</span>
               </div>
             </div>
           </div>
@@ -272,14 +270,14 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white">
                     <Sparkles className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Basic Information</h3>
-                  <p className="text-gray-500 text-sm">Tell us about this opportunity</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Temel Bilgiler</h3>
+                  <p className="text-gray-500 text-sm">Fırsat Hakkında Bilgi Verin</p>
                 </div>
 
                 {/* Opportunity Title */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Opportunity Title <span className="text-red-500">*</span>
+                    Fırsat Başlığı <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -287,10 +285,9 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     </div>
                     <input
                       {...register("title")}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg ${
-                        errors.title ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                      placeholder="e.g., Website Redesign Project, Mobile App Development"
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg ${errors.title ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                        }`}
+                      placeholder="örneğin, Web Sitesi Yeniden Tasarım Projesi, Mobil Uygulama Geliştirme"
                     />
                     {!errors.title && watchedValues.title && watchedValues.title.length >= 3 && (
                       <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -309,7 +306,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                 {/* Customer Name */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Customer Name <span className="text-red-500">*</span>
+                    Müşteri İsmi <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -317,10 +314,9 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     </div>
                     <input
                       {...register("customerName")}
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                        errors.customerName ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                      placeholder="e.g., Acme Corporation, Tech Solutions Inc"
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${errors.customerName ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                        }`}
+                      placeholder="örneğin, Acme Corporation, Tech Solutions Inc"
                     />
                     {!errors.customerName && watchedValues.customerName && watchedValues.customerName.length >= 2 && (
                       <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -339,20 +335,20 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                 {/* Opportunity Value */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Opportunity Value <span className="text-red-500">*</span>
+                    Fırsat Değeri <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <DollarSign className="h-5 w-5 text-gray-400" />
+                      <span className="text-gray-600 font-semibold text-lg">₺</span>
                     </div>
+
                     <input
                       {...register("value")}
                       type="number"
                       min="1"
                       step="100"
-                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg font-semibold ${
-                        errors.value ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
+                      className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg font-semibold ${errors.value ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                        }`}
                       placeholder="25000"
                     />
                     {!errors.value && watchedValues.value > 0 && (
@@ -369,7 +365,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   )}
                   {watchedValues.value > 0 && (
                     <p className="text-green-600 text-sm mt-2 font-medium">
-                      ${Number(watchedValues.value).toLocaleString()} USD
+                      ₺{Number(watchedValues.value).toLocaleString()} TL
                     </p>
                   )}
                 </div>
@@ -383,42 +379,40 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white">
                     <Target className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Pipeline Stage</h3>
-                  <p className="text-gray-500 text-sm">Where is this opportunity in your sales process?</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Süreç Hattı</h3>
+                  <p className="text-gray-500 text-sm">Bu Fırsat, Satış Sürecinizin Tam Olarak Neresinde?</p>
                 </div>
 
                 {/* Stage Selection */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-4">
-                    Current Stage <span className="text-red-500">*</span>
+                    Mevcut Aşama <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {stages.map((stage) => (
                       <label key={stage} className="cursor-pointer group">
                         <input {...register("stage")} type="radio" value={stage} className="sr-only" />
                         <div
-                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                            watchedValues.stage === stage
-                              ? stageColors[stage] + " border-current shadow-lg"
-                              : "border-gray-200 hover:border-gray-300 bg-white"
-                          }`}
+                          className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${watchedValues.stage === stage
+                            ? stageColors[stage] + " border-current shadow-lg"
+                            : "border-gray-200 hover:border-gray-300 bg-white"
+                            }`}
                         >
                           <div className="flex items-center space-x-3">
                             <div
-                              className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                                watchedValues.stage === stage ? "bg-white/20" : "bg-gray-100"
-                              }`}
+                              className={`w-10 h-10 rounded-lg flex items-center justify-center ${watchedValues.stage === stage ? "bg-white/20" : "bg-gray-100"
+                                }`}
                             >
                               {stageIcons[stage]}
                             </div>
                             <div>
                               <h4 className="font-semibold">{stageLabels[stage]}</h4>
                               <p className="text-xs opacity-75">
-                                {stage === "contacted" && "Initial outreach made"}
-                                {stage === "meeting" && "Meeting scheduled or held"}
-                                {stage === "proposal" && "Proposal sent to client"}
-                                {stage === "won" && "Deal closed successfully"}
-                                {stage === "lost" && "Opportunity lost"}
+                                {stage === "contacted" && "İlk Bilgilendirilme Yapıldı"}
+                                {stage === "meeting" && "Toplantı Yapıldı ya da Planlandı"}
+                                {stage === "proposal" && "Teklif Müşteriye Gönderildi"}
+                                {stage === "won" && "Anlaşma Başarılı Bir Şekilde Kapatıldı"}
+                                {stage === "lost" && "Fırsat Kaybedildi"}
                               </p>
                             </div>
                           </div>
@@ -431,7 +425,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                 {/* Probability Slider */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Success Probability
+                    Başarı Oranı
                     <span className="ml-2 text-purple-600 font-bold">{watchedValues.probability}%</span>
                   </label>
                   <div className="relative">
@@ -459,10 +453,10 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     >
                       {getProbabilityIcon(watchedValues.probability || 25)}
                       <span className="text-sm font-medium">
-                        {(watchedValues.probability ?? 0) >= 75 && "High Confidence"}
-                        {(watchedValues.probability ?? 0) >= 50 && (watchedValues.probability ?? 0) < 75 && "Good Chance"}
-                        {(watchedValues.probability ?? 0) >= 25 && (watchedValues.probability ?? 0) < 50 && "Moderate Chance"}
-                        {(watchedValues.probability ?? 0) < 25 && "Low Confidence"}
+                        {(watchedValues.probability ?? 0) >= 75 && "Yüksek Güven"}
+                        {(watchedValues.probability ?? 0) >= 50 && (watchedValues.probability ?? 0) < 75 && "Orta-Yüksek Güven"}
+                        {(watchedValues.probability ?? 0) >= 25 && (watchedValues.probability ?? 0) < 50 && "Orta Düzey Güven"}
+                        {(watchedValues.probability ?? 0) < 25 && "Düşük Güven"}
                       </span>
                     </div>
                   </div>
@@ -521,11 +515,10 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                       <label key={source} className="cursor-pointer">
                         <input {...register("source")} type="radio" value={source} className="sr-only" />
                         <div
-                          className={`p-3 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${
-                            watchedValues.source === source
-                              ? "bg-purple-100 text-purple-800 border-purple-200"
-                              : "border-gray-200 hover:border-gray-300 bg-white"
-                          }`}
+                          className={`p-3 rounded-xl border-2 text-center transition-all duration-200 hover:scale-105 ${watchedValues.source === source
+                            ? "bg-purple-100 text-purple-800 border-purple-200"
+                            : "border-gray-200 hover:border-gray-300 bg-white"
+                            }`}
                         >
                           <div className="flex flex-col items-center space-y-1">
                             {getSourceIcon(source)}
@@ -560,17 +553,16 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
             <div className="bg-gradient-to-r from-gray-50 to-purple-50 rounded-2xl p-6 border border-gray-200">
               <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                 <Sparkles className="w-4 h-4" />
-                <span>Opportunity Preview</span>
+                <span>Fırsat Önizlemesi</span>
               </h4>
               <div className="bg-white rounded-xl p-4 border border-gray-200">
                 <div className="flex items-start justify-between mb-3">
-                  <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.title || "Opportunity Title"}</h5>
+                  <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.title || "Fırsat Başlığı"}</h5>
                   <div className="flex items-center space-x-2">
                     {watchedValues.stage && (
                       <span
-                        className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${
-                          stageColors[watchedValues.stage as OpportunityStage]
-                        }`}
+                        className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${stageColors[watchedValues.stage as OpportunityStage]
+                          }`}
                       >
                         {stageIcons[watchedValues.stage as OpportunityStage]}
                         <span>{stageLabels[watchedValues.stage as OpportunityStage]}</span>
@@ -590,12 +582,12 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                 </div>
                 <div className="flex items-center space-x-2 mb-3">
                   <Building className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-600">{watchedValues.customerName || "Customer Name"}</span>
+                  <span className="text-gray-600">{watchedValues.customerName || "Müşteri İsmi"}</span>
                 </div>
                 <div className="flex items-center space-x-1 mb-3">
-                  <DollarSign className="w-5 h-5 text-green-600" />
+                  <span className="w-5 h-5 text-green-600 font-semibold text-base flex items-center justify-center">₺</span>
                   <span className="font-bold text-green-600 text-lg">
-                    ${Number(watchedValues.value || 0).toLocaleString()}
+                    ₺{Number(watchedValues.value || 0).toLocaleString()}
                   </span>
                 </div>
                 {watchedValues.note && (
@@ -606,13 +598,13 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     {watchedValues.contactDate && (
                       <div className="flex items-center space-x-1">
                         <Calendar className="w-4 h-4" />
-                        <span>Contact: {new Date(watchedValues.contactDate).toLocaleDateString()}</span>
+                        <span>Kontak: {new Date(watchedValues.contactDate).toLocaleDateString()}</span>
                       </div>
                     )}
                     {watchedValues.expectedCloseDate && (
                       <div className="flex items-center space-x-1">
                         <TrendingUp className="w-4 h-4" />
-                        <span>Expected: {new Date(watchedValues.expectedCloseDate).toLocaleDateString()}</span>
+                        <span>Beklenen: {new Date(watchedValues.expectedCloseDate).toLocaleDateString()}</span>
                       </div>
                     )}
                   </div>
@@ -634,7 +626,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   onClick={onClose}
                   className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
                 >
-                  Cancel
+                  Vazgeç
                 </button>
                 {currentStep > 1 && (
                   <button
@@ -642,7 +634,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     onClick={prevStep}
                     className="px-6 py-3 border-2 border-purple-200 text-purple-700 rounded-xl hover:bg-purple-50 transition-colors duration-200 font-medium"
                   >
-                    Previous
+                    Önceki
                   </button>
                 )}
               </div>
@@ -654,7 +646,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     disabled={!getStepValidation(currentStep)}
                     className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium"
                   >
-                    Next Step
+                    Sonraki Adım
                   </button>
                 ) : (
                   <button
@@ -665,7 +657,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Saving Opportunity...</span>
+                        <span>Kaydediliyor...</span>
                       </>
                     ) : (
                       <>
