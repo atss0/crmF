@@ -16,7 +16,6 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle,
-  DollarSign,
   Tag,
 } from "lucide-react"
 import {
@@ -584,7 +583,9 @@ function ProductTable({
                   {/* Price */}
                   <div className="col-span-2">
                     <div className="flex items-center space-x-1">
-                      <DollarSign className="w-4 h-4 text-green-600" />
+                      <span className="w-4 h-4 flex items-center justify-center text-green-600 text-sm font-bold">
+                        ₺
+                      </span>
                       <span className="font-semibold text-green-600">${product.price.toFixed(2)}</span>
                     </div>
                   </div>

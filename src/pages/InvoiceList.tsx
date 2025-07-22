@@ -14,7 +14,6 @@ import {
   Download,
   Edit,
   Trash2,
-  DollarSign,
   Calendar,
   Clock,
   CheckCircle,

@@ -10,7 +10,6 @@ import {
   Plus,
   Search,
   Filter,
-  DollarSign,
   TrendingUp,
   Calendar,
   Edit,
@@ -537,7 +536,9 @@ function PipelineList({ opportunities, onEdit, onDelete }: PipelineListProps) {
                 {/* Value */}
                 <div className="col-span-1">
                   <div className="flex items-center space-x-1">
-                    <DollarSign className="w-4 h-4 text-green-600" />
+                    <span className="w-4 h-4 flex items-center justify-center text-green-600 text-sm font-bold">
+                      ₺
+                    </span>
                     <span className="font-semibold text-green-600">₺{opp.value.toLocaleString()}</span>
                   </div>
                 </div>

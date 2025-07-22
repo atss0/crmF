@@ -13,7 +13,6 @@ import {
   Plus,
   Type,
   Building,
-  DollarSign,
   FileText,
   Calendar,
   TrendingUp,

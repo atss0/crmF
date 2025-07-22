@@ -13,7 +13,6 @@ import {
   Mail,
   MapPin,
   Calendar,
-  DollarSign,
   Hash,
   Trash2,
   Save,
@@ -227,18 +226,27 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
   const getPaymentMethodIcon = (method: PaymentMethod) => {
     switch (method) {
       case "credit_card":
-        return <CreditCard className="w-4 h-4" />
+        return <CreditCard className="w-4 h-4" />;
       case "bank_transfer":
-        return <Building className="w-4 h-4" />
+        return <Building className="w-4 h-4" />;
       case "cash":
-        return <DollarSign className="w-4 h-4" />
+        return (
+          <span className="w-4 h-4 flex items-center justify-center text-sm font-bold">
+            ₺
+          </span>
+        );
       case "check":
-        return <Receipt className="w-4 h-4" />
+        return <Receipt className="w-4 h-4" />;
       case "paypal":
-        return <CreditCard className="w-4 h-4" />
+        return <CreditCard className="w-4 h-4" />;
       default:
-        return <DollarSign className="w-4 h-4" />
+        return (
+          <span className="w-4 h-4 flex items-center justify-center text-sm font-bold">
+            ₺
+          </span>
+        );
     }
+
   }
 
   const nextStep = () => {
@@ -297,19 +305,17 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
-                      currentStep >= step
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${currentStep >= step
                         ? "bg-white text-indigo-600"
                         : "bg-white/20 text-white border-2 border-white/30"
-                    }`}
+                      }`}
                   >
                     {currentStep > step ? <Check className="w-4 h-4" /> : step}
                   </div>
                   {step < 3 && (
                     <div
-                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${
-                        currentStep > step ? "bg-white" : "bg-white/30"
-                      }`}
+                      className={`w-12 h-0.5 mx-2 transition-colors duration-200 ${currentStep > step ? "bg-white" : "bg-white/30"
+                        }`}
                     />
                   )}
                 </div>
@@ -351,9 +357,8 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                       </div>
                       <input
                         {...register("invoiceNumber")}
-                        className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-                          errors.invoiceNumber ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                        }`}
+                        className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${errors.invoiceNumber ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                          }`}
                         placeholder="INV-2024-001"
                       />
                       {!errors.invoiceNumber && watchedValues.invoiceNumber && (
@@ -423,9 +428,8 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                       </div>
                       <input
                         {...register("customerName")}
-                        className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-                          errors.customerName ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                        }`}
+                        className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${errors.customerName ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                          }`}
                         placeholder="Acme Corporation"
                       />
                       {!errors.customerName && watchedValues.customerName && watchedValues.customerName.length >= 2 && (
@@ -453,9 +457,8 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         <input
                           {...register("customerEmail")}
                           type="email"
-                          className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-                            errors.customerEmail ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                          }`}
+                          className={`w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${errors.customerEmail ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                            }`}
                           placeholder="musteri@acme.com"
                         />
                       </div>
@@ -712,17 +715,15 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         <label key={status} className="cursor-pointer">
                           <input {...register("status")} type="radio" value={status} className="sr-only" />
                           <div
-                            className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                              watchedValues.status === status
+                            className={`p-4 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${watchedValues.status === status
                                 ? getStatusColor(status) + " border-current shadow-lg"
                                 : "border-gray-200 hover:border-gray-300 bg-white"
-                            }`}
+                              }`}
                           >
                             <div className="flex items-center space-x-3">
                               <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                                  watchedValues.status === status ? "bg-white/20" : "bg-gray-100"
-                                }`}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center ${watchedValues.status === status ? "bg-white/20" : "bg-gray-100"
+                                  }`}
                               >
                                 {getStatusIcon(status)}
                               </div>
@@ -751,17 +752,15 @@ export default function InvoiceFormModal({ onClose, onSubmit, initialData }: Inv
                         <label key={method} className="cursor-pointer">
                           <input {...register("paymentMethod")} type="radio" value={method} className="sr-only" />
                           <div
-                            className={`p-3 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${
-                              watchedValues.paymentMethod === method
+                            className={`p-3 rounded-xl border-2 transition-all duration-200 hover:scale-105 ${watchedValues.paymentMethod === method
                                 ? "bg-indigo-100 text-indigo-800 border-indigo-200 shadow-lg"
                                 : "border-gray-200 hover:border-gray-300 bg-white"
-                            }`}
+                              }`}
                           >
                             <div className="flex items-center space-x-3">
                               <div
-                                className={`w-6 h-6 rounded-lg flex items-center justify-center ${
-                                  watchedValues.paymentMethod === method ? "bg-indigo-200" : "bg-gray-100"
-                                }`}
+                                className={`w-6 h-6 rounded-lg flex items-center justify-center ${watchedValues.paymentMethod === method ? "bg-indigo-200" : "bg-gray-100"
+                                  }`}
                               >
                                 {getPaymentMethodIcon(method)}
                               </div>

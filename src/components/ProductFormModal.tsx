@@ -12,7 +12,6 @@ import {
   Plus,
   Type,
   FileText,
-  DollarSign,
   Hash,
   Tag,
   ImageIcon,
