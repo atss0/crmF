@@ -33,6 +33,7 @@ export default function TaskList() {
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed">("all")
   const [priorityFilter, setPriorityFilter] = useState<"all" | "high" | "medium" | "low">("all")
   const [viewMode, setViewMode] = useState<"list" | "kanban">("list")
+  const [updatingTaskId, setUpdatingTaskId] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,24 +57,23 @@ export default function TaskList() {
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (task.assignee && task.assignee.toLowerCase().includes(searchTerm.toLowerCase()))
 
-    const matchesStatus = statusFilter === "all" || task.status === statusFilter
-    const matchesPriority = priorityFilter === "all" || task.priority === priorityFilter
+    const matchesStatus = statusFilter === "all" || task.durum === statusFilter
+    const matchesPriority = priorityFilter === "all" || task.oncelik === priorityFilter
 
     return matchesSearch && matchesStatus && matchesPriority
   })
 
   const handleFormSubmit = async (data: Omit<any, 'id'>) => {
+
+    console.log(data)
     if (editingTask) {
       /* güncelle */
       const updated = await updateTask(editingTask.id, {
         baslik: data.title,
-        description: data.description,
-        dueDate: data.dueDate,
-        status: data.status as any, // Type casting to resolve type mismatch
-        priority: data.priority,
-        atanan: "Jane Smith",
-        customerId: data.customerId,
-        tags: data.tags,
+        aciklama: data.description,
+        bitis_tarihi: data.dueDate,
+        durum: data.status as any, // Type casting to resolve type mismatch
+        oncelik: data.priority,
       })
       setTasks(prev => prev.map(t => t.id === updated.id ? updated : t))
       setEditingTask(null)
@@ -81,11 +81,10 @@ export default function TaskList() {
       /* yeni görev */
       const created = await createTask({
         baslik: data.title,
-        description: data.description,
-        dueDate: data.dueDate,
-        status: 'pending',
-        priority: data.priority,
-        atanan: 'Jane Smith',
+        aciklama: data.description,
+        bitis_tarihi: data.dueDate,
+        durum: data.status,
+        oncelik: data.priority,
       })
       setTasks(prev => [...prev, created])
     }
@@ -101,9 +100,26 @@ export default function TaskList() {
   const toggleTaskStatus = async (id: number) => {
     const current = tasks.find(t => t.id === id)
     if (!current) return
-    const newStatus = current.status === 'completed' ? 'pending' : 'completed'
-    const updated  = await updateTask(id, { status: newStatus })
-    setTasks(prev => prev.map(t => t.id === id ? updated : t))
+
+    try {
+      setUpdatingTaskId(id) // Spinner'ı başlat
+
+      const newStatus = current.durum === 'completed' ? 'pending' : 'completed'
+      const updated = await updateTask(id, {
+        baslik: current.baslik,
+        durum: newStatus,
+        aciklama: current.aciklama,
+        bitis_tarihi: current.bitis_tarihi,
+        oncelik: current.oncelik,
+      })
+
+      setTasks(prev => prev.map(t => t.id === id ? updated : t))
+    } catch (error) {
+      console.error("Görev güncellenirken hata:", error)
+      // dilersen burada toast veya alert gösterimi yapılabilir
+    } finally {
+      setUpdatingTaskId(null) // Spinner'ı durdur
+    }
   }
 
   const getPriorityColor = (priority: string) => {
@@ -136,9 +152,8 @@ export default function TaskList() {
     return new Date(dueDate) < new Date() && new Date(dueDate).toDateString() !== new Date().toDateString()
   }
 
-  const pendingTasks = tasks.filter((t) => t.status === "pending")
-  const completedTasks = tasks.filter((t) => t.status === "completed")
-  const overdueTasks = tasks.filter((t) => t.status === "pending" && isOverdue(t.dueDate))
+  const pendingTasks = tasks.filter((t) => t.durum === "pending")
+  const completedTasks = tasks.filter((t) => t.durum === "completed")
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -154,7 +169,9 @@ export default function TaskList() {
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                   Görevler
                 </h1>
-                <p className="text-gray-600 mt-1">Manage your team's tasks and projects</p>
+                <p className="text-gray-600 mt-1">
+                  Görevlerinizi yönetin, takip edin ve tamamlayın.
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -188,7 +205,7 @@ export default function TaskList() {
 
       <div className="p-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white">
@@ -217,16 +234,6 @@ export default function TaskList() {
               <span className="text-2xl font-bold text-gray-900">{completedTasks.length}</span>
             </div>
             <p className="text-gray-600 text-sm font-medium">Bitmiş Görevler</p>
-          </div>
-
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center text-white">
-                <AlertCircle className="w-5 h-5" />
-              </div>
-              <span className="text-2xl font-bold text-gray-900">{overdueTasks.length}</span>
-            </div>
-            <p className="text-gray-600 text-sm font-medium">Gecikmiş Görevler</p>
           </div>
         </div>
 
@@ -294,55 +301,67 @@ export default function TaskList() {
               filteredTasks.map((task) => (
                 <div
                   key={task.id}
-                  className={`bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 hover:shadow-2xl transition-all duration-300 group ${isOverdue(task.dueDate) && task.status === "pending" ? "border-red-200 bg-red-50/50" : ""
+                  className={`bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 hover:shadow-2xl transition-all duration-300 group ${isOverdue(task.bitis_tarihi) && task.durum === "pending" ? "border-red-200 bg-red-50/50" : ""
                     }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-4 flex-1">
                       <button
                         onClick={() => toggleTaskStatus(task.id)}
-                        className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${task.status === "done"
+                        disabled={updatingTaskId === task.id}
+                        className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200
+                        ${task.durum === "completed"
                             ? "bg-green-500 border-green-500 text-white"
-                            : "border-gray-300 hover:border-green-500"
-                          }`}
+                            : "border-gray-300 hover:border-green-500"}
+                          ${updatingTaskId === task.id ? "opacity-50 cursor-not-allowed" : ""}
+                        `}
                       >
-                        {task.status === "done" && <CheckCircle2 className="w-4 h-4" />}
+                        {updatingTaskId === task.id ? (
+                          <div
+                            className={`w-3 h-3 border-2 border-t-transparent rounded-full animate-spin ${task.durum === "completed" ? "border-white" : "border-gray-500"
+                              }`}
+                          />
+                        ) : (
+                          task.durum === "completed" && <CheckCircle2 className="w-4 h-4" />
+                        )}
                       </button>
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
                           <h3
-                            className={`text-lg font-semibold ${task.status === "done" ? "line-through text-gray-500" : "text-gray-900"
+                            className={`text-lg font-semibold ${task.durum === "completed" ? "line-through text-gray-500" : "text-gray-900"
                               }`}
                           >
                             {task.baslik}
                           </h3>
                           <span
                             className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(
-                              task.priority || "medium",
+                              task.oncelik || "medium",
                             )}`}
                           >
-                            {getPriorityIcon(task.priority || "medium")}
-                            <span>{task.priority || "medium"}</span>
-                          </span>
-                          {task.category && (
-                            <span className="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                              {task.category}
+                            {getPriorityIcon(task.oncelik || "medium")}
+                            <span>
+                              {{
+                                high: "Yüksek",
+                                medium: "Orta",
+                                low: "Düşük",
+                              }[task.oncelik as "high" | "medium" | "low" || "medium"]}
                             </span>
-                          )}
+                          </span>
                         </div>
-                        <p className={`text-gray-600 mb-3 ${task.status === "done" ? "line-through" : ""}`}>
-                          {task.description}
+                        <p className={`text-gray-600 mb-3 ${task.durum === "completed" ? "line-through" : ""}`}>
+                          {task.aciklama || "No description provided"}
                         </p>
+
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-4 h-4" />
                             <span
                               className={
-                                isOverdue(task.dueDate) && task.status === "pending" ? "text-red-600 font-medium" : ""
+                                isOverdue(task.bitis_tarihi) && task.durum === "pending" ? "text-red-600 font-medium" : ""
                               }
                             >
-                              {new Date(task.dueDate).toLocaleDateString()}
-                              {isOverdue(task.dueDate) && task.status === "pending" && " (Overdue)"}
+                              {new Date(task.bitis_tarihi).toLocaleDateString()}
+                              {isOverdue(task.bitis_tarihi) && task.durum === "pending" && " (Bitiş Tarihi Geçti)"}
                             </span>
                           </div>
                           {task.assignee && (
@@ -354,6 +373,13 @@ export default function TaskList() {
                         </div>
                       </div>
                     </div>
+                    <span className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full
+                    ${task.durum === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"}`}>
+                      {task.durum === "completed" ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                      <span>{task.durum === "completed" ? "Tamamlandı" : "Gönderildi"}</span>
+                    </span>
                     <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <button
                         onClick={() => {
@@ -384,57 +410,85 @@ export default function TaskList() {
         ) : (
           // Kanban View
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Gönderilen Görevler */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                 <Clock className="w-5 h-5 text-yellow-500" />
-                <span>Pending ({pendingTasks.length})</span>
+                <span>Gönderilen ({pendingTasks.length})</span>
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filteredTasks
-                  .filter((task) => task.status === "pending")
+                  .filter((task) => task.durum === "pending")
                   .map((task) => (
                     <div
                       key={task.id}
-                      className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                      className={`bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200 ${isOverdue(task.bitis_tarihi) ? "bg-red-50/50 border-red-200" : ""}`}
                     >
-                      <h4 className="font-medium text-gray-900 mb-2">{task.baslik}</h4>
-                      <p className="text-sm text-gray-600 mb-3">{task.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(
-                            task.priority || "medium",
-                          )}`}
-                        >
-                          {getPriorityIcon(task.priority || "medium")}
-                          <span>{task.priority || "medium"}</span>
-                        </span>
-                        <span className="text-xs text-gray-500">{new Date(task.dueDate).toLocaleDateString()}</span>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 mb-2">{task.baslik}</h4>
+                          <p className="text-sm text-gray-600 mb-3">{task.aciklama}</p>
+                          <div className="flex items-center justify-between">
+                            <span
+                              className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(task.oncelik || "medium")}`}
+                            >
+                              {getPriorityIcon(task.oncelik || "medium")}
+                              <span>
+                                {{
+                                  high: "Yüksek",
+                                  medium: "Orta",
+                                  low: "Düşük",
+                                }[task.oncelik as "high" | "medium" | "low" || "medium"]}
+                              </span>
+                            </span>
+                            <span className={`text-xs ${isOverdue(task.bitis_tarihi) ? "text-red-600 font-medium" : "text-gray-500"}`}>
+                              {new Date(task.bitis_tarihi).toLocaleDateString()}
+                              {isOverdue(task.bitis_tarihi) && " (Bitiş Tarihi Geçti)"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}
               </div>
             </div>
 
+            {/* Tamamlanan Görevler */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
-                <span>Completed ({completedTasks.length})</span>
+                <span>Tamamlanan ({completedTasks.length})</span>
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filteredTasks
-                  .filter((task) => task.status === "done")
+                  .filter((task) => task.durum === "completed")
                   .map((task) => (
                     <div
                       key={task.id}
                       className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow duration-200 opacity-75"
                     >
-                      <h4 className="font-medium text-gray-900 mb-2 line-through">{task.baslik}</h4>
-                      <p className="text-sm text-gray-600 mb-3 line-through">{task.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                          Completed
-                        </span>
-                        <span className="text-xs text-gray-500">{new Date(task.dueDate).toLocaleDateString()}</span>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 mb-2 line-through">{task.baslik}</h4>
+                          <p className="text-sm text-gray-600 mb-3 line-through">{task.aciklama}</p>
+                          <div className="flex items-center justify-between">
+                            <span
+                              className={`inline-flex items-center space-x-1 px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(task.oncelik || "medium")}`}
+                            >
+                              {getPriorityIcon(task.oncelik || "medium")}
+                              <span>
+                                {{
+                                  high: "Yüksek",
+                                  medium: "Orta",
+                                  low: "Düşük",
+                                }[task.oncelik as "high" | "medium" | "low" || "medium"]}
+                              </span>
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(task.bitis_tarihi).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   ))}

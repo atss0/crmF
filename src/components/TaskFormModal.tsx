@@ -13,7 +13,6 @@ import {
   Calendar,
   Flag,
   User,
-  Tag,
   Clock,
   AlertCircle,
   Save,
@@ -22,13 +21,12 @@ import {
 } from "lucide-react"
 
 const schema = yup.object().shape({
-  title: yup.string().required("Task title is required").min(3, "Title must be at least 3 characters"),
-  description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
+  title: yup.string().required("Task title is required").min(3, "Görev başlığı en az 3 karakter olmalıdır"),
+  description: yup.string().required("Description is required").min(10, "Görev açıklaması en az 10 karakter olmalıdır"),
   dueDate: yup.string().required("Due date is required"),
-  status: yup.string().oneOf(["pending", "done"]).required("Status is required"),
+  status: yup.string().oneOf(["pending", "completed"]).required("Status is required"),
   priority: yup.string().oneOf(["high", "medium", "low"]).required("Priority is required"),
   assignee: yup.string(),
-  category: yup.string(),
 })
 
 interface TaskFormModalProps {
@@ -56,8 +54,6 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
       dueDate: new Date().toISOString().split("T")[0],
       status: "pending",
       priority: "medium",
-      assignee: "",
-      category: "",
     },
   })
 
@@ -71,8 +67,6 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
         dueDate: initialData.dueDate || new Date().toISOString().split("T")[0],
         status: initialData.status || "pending",
         priority: initialData.priority || "medium",
-        assignee: initialData.assignee || "",
-        category: initialData.category || "",
       })
     } else {
       reset({
@@ -82,7 +76,6 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
         status: "pending",
         priority: "medium",
         assignee: "",
-        category: "",
       })
     }
   }, [initialData, reset])
@@ -121,13 +114,10 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
   }
 
   const getStatusColor = (status: string) => {
-    return status === "done"
+    return status === "completed"
       ? "bg-green-100 text-green-800 border-green-200"
       : "bg-blue-100 text-blue-800 border-blue-200"
   }
-
-  const categories = ["Design", "Development", "Meeting", "Research", "Marketing", "Support", "Planning"]
-  const assignees = ["John Doe", "Jane Smith", "Mike Johnson", "Sarah Wilson", "Tom Brown"]
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
@@ -141,9 +131,9 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                 {isEdit ? <CheckSquare className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{isEdit ? "Edit Task" : "Create New Task"}</h2>
+                <h2 className="text-2xl font-bold">{isEdit ? "Görev Düzenle" : "Yeni Görev"}</h2>
                 <p className="text-green-100 text-sm">
-                  {isEdit ? "Update task details and settings" : "Add a new task to your project"}
+                  {isEdit ? "Görevi düzenle" : "Yeni görev ekle"}
                 </p>
               </div>
             </div>
@@ -165,13 +155,13 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white">
                   <Sparkles className="w-4 h-4" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Task Overview</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Görev Özeti</h3>
               </div>
 
               {/* Title Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Task Title <span className="text-red-500">*</span>
+                  Başlık <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -179,10 +169,9 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                   </div>
                   <input
                     {...register("title")}
-                    className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 text-lg ${
-                      errors.title ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                    }`}
-                    placeholder="Enter a clear and descriptive task title"
+                    className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 text-lg ${errors.title ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                      }`}
+                    placeholder="Görev başlığını girin..."
                   />
                   {!errors.title && watchedValues.title && watchedValues.title.length >= 3 && (
                     <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -201,7 +190,7 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
               {/* Description Field */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Description <span className="text-red-500">*</span>
+                  Açıklama <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute top-4 left-4 pointer-events-none">
@@ -210,10 +199,9 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                   <textarea
                     {...register("description")}
                     rows={4}
-                    className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 resize-none ${
-                      errors.description ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
-                    }`}
-                    placeholder="Provide detailed information about what needs to be done..."
+                    className={`w-full pl-12 pr-4 py-4 border-2 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 resize-none ${errors.description ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+                      }`}
+                    placeholder="Görev açıklamasını girin..."
                   />
                 </div>
                 <div className="flex justify-between items-center mt-2">
@@ -224,7 +212,7 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                     </p>
                   ) : (
                     <p className="text-gray-500 text-sm">
-                      {watchedValues.description?.length || 0} characters (minimum 10 required)
+                      {watchedValues.description?.length || 0} karakter / {watchedValues.description?.length < 10 ? "En az 10 karakter" : "Yeterli"}
                     </p>
                   )}
                 </div>
@@ -237,14 +225,14 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white">
                   <Flag className="w-4 h-4" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">Task Settings</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Görev Ayarları</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Due Date */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Due Date <span className="text-red-500">*</span>
+                    Bitiş Tarihi <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -261,93 +249,64 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                 {/* Priority */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Priority <span className="text-red-500">*</span>
+                    Öncelik <span className="text-red-500">*</span>
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {["high", "medium", "low"].map((priority) => (
-                      <label key={priority} className="cursor-pointer">
-                        <input {...register("priority")} type="radio" value={priority} className="sr-only" />
-                        <div
-                          className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
-                            watchedValues.priority === priority
+                    {["high", "medium", "low"].map((priority) => {
+                      const labels = {
+                        high: "Yüksek",
+                        medium: "Orta",
+                        low: "Düşük",
+                      }
+
+                      return (
+                        <label key={priority} className="cursor-pointer">
+                          <input {...register("priority")} type="radio" value={priority} className="sr-only" />
+                          <div
+                            className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${watchedValues.priority === priority
                               ? getPriorityColor(priority) + " border-current"
                               : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            {getPriorityIcon(priority)}
-                            <span className="text-sm font-medium capitalize">{priority}</span>
+                              }`}
+                          >
+                            <div className="flex items-center justify-center space-x-1">
+                              {getPriorityIcon(priority)}
+                              <span className="text-sm font-medium capitalize">{labels[priority as "high" | "medium" | "low"]}</span>
+                            </div>
                           </div>
-                        </div>
-                      </label>
-                    ))}
+                        </label>
+                      )
+                    })}
                   </div>
                 </div>
 
                 {/* Status */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                <div className="col-span-1 md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Durum</label>
                   <div className="grid grid-cols-2 gap-2">
-                    {["pending", "done"].map((status) => (
-                      <label key={status} className="cursor-pointer">
-                        <input {...register("status")} type="radio" value={status} className="sr-only" />
-                        <div
-                          className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
-                            watchedValues.status === status
+                    {["pending", "completed"].map((status) => {
+                      const labels = {
+                        pending: "Bekliyor",
+                        completed: "Tamamlandı",
+                      }
+
+                      return (
+                        <label key={status} className="cursor-pointer">
+                          <input {...register("status")} type="radio" value={status} className="sr-only" />
+                          <div
+                            className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${watchedValues.status === status
                               ? getStatusColor(status) + " border-current"
                               : "border-gray-200 hover:border-gray-300"
-                          }`}
-                        >
-                          <div className="flex items-center justify-center space-x-1">
-                            {status === "done" ? <CheckSquare className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
-                            <span className="text-sm font-medium capitalize">{status}</span>
+                              }`}
+                          >
+                            <div className="flex items-center justify-center space-x-1">
+                              {status === "completed" ? <CheckSquare className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
+                              <span className="text-sm font-medium capitalize">{labels[status as "pending" | "completed"]}</span>
+                            </div>
                           </div>
-                        </div>
-                      </label>
-                    ))}
+                        </label>
+                      )
+                    })}
                   </div>
-                </div>
-
-                {/* Category */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Tag className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <select
-                      {...register("category")}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white"
-                    >
-                      <option value="">Select category</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Assignee */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Assignee</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <select
-                    {...register("assignee")}
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white"
-                  >
-                    <option value="">Assign to someone</option>
-                    {assignees.map((assignee) => (
-                      <option key={assignee} value={assignee}>
-                        {assignee}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
             </div>
@@ -356,11 +315,11 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
             <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl p-6 border border-gray-200">
               <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center space-x-2">
                 <Sparkles className="w-4 h-4" />
-                <span>Task Preview</span>
+                <span>Görev Önizlemesi</span>
               </h4>
               <div className="bg-white rounded-xl p-4 border border-gray-200">
                 <div className="flex items-start justify-between mb-3">
-                  <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.title || "Task Title"}</h5>
+                  <h5 className="font-semibold text-gray-900 text-lg">{watchedValues.title || "Görev Başlığı"}</h5>
                   <div className="flex items-center space-x-2">
                     {watchedValues.priority && (
                       <span
@@ -369,38 +328,33 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                         )}`}
                       >
                         {getPriorityIcon(watchedValues.priority)}
-                        <span>{watchedValues.priority}</span>
-                      </span>
-                    )}
-                    {watchedValues.category && (
-                      <span className="inline-flex px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                        {watchedValues.category}
+                        <span>
+                          {{
+                            high: "Yüksek",
+                            medium: "Orta",
+                            low: "Düşük",
+                          }[watchedValues.priority as "high" | "medium" | "low"]}
+                        </span>
                       </span>
                     )}
                   </div>
                 </div>
-                <p className="text-gray-600 mb-3">{watchedValues.description || "Task description will appear here"}</p>
+                <p className="text-gray-600 mb-3">{watchedValues.description || "Görev açıklaması"}</p>
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-1">
                       <Calendar className="w-4 h-4" />
                       <span>
-                        {watchedValues.dueDate ? new Date(watchedValues.dueDate).toLocaleDateString() : "No date"}
+                        {watchedValues.dueDate ? new Date(watchedValues.dueDate).toLocaleDateString() : "Bitiş tarihi yok"}
                       </span>
                     </div>
-                    {watchedValues.assignee && (
-                      <div className="flex items-center space-x-1">
-                        <User className="w-4 h-4" />
-                        <span>{watchedValues.assignee}</span>
-                      </div>
-                    )}
                   </div>
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(
                       watchedValues.status,
                     )}`}
                   >
-                    {watchedValues.status === "done" ? "Completed" : "Pending"}
+                    {watchedValues.status === "completed" ? "Tamamlandı" : "Bekliyor"}{" "}
                   </span>
                 </div>
               </div>
@@ -413,24 +367,24 @@ export default function TaskFormModal({ onClose, onSubmit, initialData }: TaskFo
                 onClick={onClose}
                 className="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
               >
-                Cancel
+                İptal
               </button>
               <button
                 type="submit"
                 disabled={!isValid || isSubmitting}
-                className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center space-x-2"
+                className="relative h-12 min-w-[200px] px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center justify-center"
               >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving Task...</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    <span>{isEdit ? "Update Task" : "Create Task"}</span>
-                  </>
-                )}
+                {/* Normal metin */}
+                <div className={`absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-200 ${isSubmitting ? "opacity-0" : "opacity-100"}`}>
+                  <Save className="w-4 h-4" />
+                  <span>{isEdit ? "Görevi Güncelle" : "Görev Oluştur"}</span>
+                </div>
+
+                {/* Yükleniyor metni */}
+                <div className={`absolute inset-0 flex items-center justify-center gap-2 transition-opacity duration-200 ${isSubmitting ? "opacity-100" : "opacity-0"}`}>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Görev Kaydediliyor...</span>
+                </div>
               </button>
             </div>
           </form>

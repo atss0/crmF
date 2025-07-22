@@ -32,7 +32,7 @@ export type Task = {
 export type Pagination = { page: number; limit: number; total: number; pages: number }
 
 /* ---------- API Yanıt Şablonları ---------- */
-type ListResponse   = { success: true; data: { tasks: Task[]; pagination: Pagination } }
+type ListResponse   = { success: true; data: { tasks: any[]; pagination: Pagination } }
 type SingleResponse = { success: true; data: Task }
 
 /* ---------- Filtre Parametreleri ---------- */
@@ -68,7 +68,7 @@ export const getTask = async (id: number): Promise<Task> => {
 }
 
 // POST /tasks
-export const createTask = async (data: Partial<Task>): Promise<Task> => {
+export const createTask = async (data: Partial<any>): Promise<Task> => {
   const res = await axios.post<SingleResponse>('/tasks', data)
   return res.data.data
 }
@@ -76,7 +76,7 @@ export const createTask = async (data: Partial<Task>): Promise<Task> => {
 // PUT /tasks/:id
 export const updateTask = async (
   id: number,
-  data: Partial<Task>,
+  data: Partial<any>,
 ): Promise<Task> => {
   const res = await axios.put<SingleResponse>(`/tasks/${id}`, data)
   return res.data.data

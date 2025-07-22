@@ -76,8 +76,8 @@ export default function Dashboard() {
 
         /* Rakamlar */
 
-        const pendingTasks = tasks.filter(t => t.status === 'pending').length
-        const completedTasks = tasks.filter(t => t.status === 'completed').length
+        const pendingTasks = tasks.filter(t => t.durum === 'pending').length
+        const completedTasks = tasks.filter(t => t.durum === 'completed').length
         const activeOpportunities = firsatlar.filter(f => !['won', 'lost'].includes(f.asama)).length
         const wonOpportunities = firsatlar.filter(f => f.asama === 'won').length
 
