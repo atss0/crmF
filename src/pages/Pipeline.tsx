@@ -118,7 +118,14 @@ export default function Pipeline() {
 
   const getByStage = (stage: OpportunityStage) => filteredOpportunities.filter((o) => o.stage === stage)
 
-  const handleFormSubmit = (data: Omit<Opportunity, "id">) => {
+ const handleFormSubmit = async (data: Omit<Opportunity, "id">) => {
+  try {
+    // örnek kontrol: müşteri adı dolu mu
+    if (!data.customerName || !data.title || !data.value || data.value <= 0) {
+      alert("Lütfen gerekli alanları doldurun!")
+      return
+    }
+
     if (editingOpportunity) {
       setOpportunities((prev) =>
         prev.map((opp) => (opp.id === editingOpportunity.id ? { ...opp, ...data, id: opp.id } : opp)),
@@ -128,8 +135,14 @@ export default function Pipeline() {
       const newOpp: Opportunity = { ...data, id: Date.now() }
       setOpportunities((prev) => [...prev, newOpp])
     }
+
     setShowModal(false)
+  } catch (err) {
+    console.error("Kayıt sırasında hata:", err)
   }
+}
+
+
 
   const deleteOpportunity = (id: number) => {
     const confirmed = confirm("Are you sure you want to delete this opportunity?")
@@ -308,10 +321,7 @@ export default function Pipeline() {
       {/* Modal */}
       {showModal && (
         <OpportunityFormModal
-          onClose={() => {
-            setShowModal(false)
-            setEditingOpportunity(undefined)
-          }}
+          onClose={() => setShowModal(false)}
           onSubmit={handleFormSubmit}
           initialData={editingOpportunity}
         />

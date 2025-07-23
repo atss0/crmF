@@ -58,7 +58,7 @@ const stageIcons: Record<OpportunityStage, React.ReactNode> = {
   lost: <XCircle className="w-4 h-4" />,
 }
 
-const sources = ["Website", "Referral", "Cold Call", "LinkedIn", "Email Campaign", "Trade Show", "Partner", "Other"]
+const sources = ["Website", "Referans", "Soğuk Arama", "LinkedIn", "Email Kampanya", "Fuar", "Partner", "Diğer"]
 
 const schema = yup.object().shape({
   title: yup.string().required("Opportunity title is required").min(3, "Title must be at least 3 characters"),
@@ -143,11 +143,13 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
   }, [initialData, reset])
 
   const submitHandler = async (data: any) => {
+    if (currentStep !== 3) return // 🔒 Sadece 3. adımda çalışmasına izin ver
     setIsSubmitting(true)
     await new Promise((resolve) => setTimeout(resolve, 1200))
     onSubmit(data)
     setIsSubmitting(false)
   }
+
 
   const getProbabilityColor = (probability: number) => {
     if (probability >= 75) return "text-green-600 bg-green-100 border-green-200"
@@ -261,7 +263,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
 
         {/* Form Content */}
         <div className="p-8 overflow-y-auto max-h-[calc(95vh-200px)]">
-          <form onSubmit={handleSubmit(submitHandler)} className="space-y-8">
+          <form className="space-y-8">
             {/* Step 1: Basic Information */}
             {currentStep === 1 && (
               <div className="space-y-6">
@@ -470,14 +472,14 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white">
                     <FileText className="w-4 h-4" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900">Additional Details</h3>
-                  <p className="text-gray-500 text-sm">Optional information to track this opportunity</p>
+                  <h3 className="text-xl font-semibold text-gray-900">Ek Detaylar</h3>
+                  <p className="text-gray-500 text-sm">İsteğe Bağlı Bilgi Ekleyebilirsiniz</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Contact Date */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Contact Date</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Kontak Tarihi</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <Calendar className="h-5 w-5 text-gray-400" />
@@ -492,7 +494,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
 
                   {/* Expected Close Date */}
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Expected Close Date</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Planlanan Kapanış Tarihi</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <TrendingUp className="h-5 w-5 text-gray-400" />
@@ -508,7 +510,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
 
                 {/* Source */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Lead Source</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">İletişim Kaynağı</label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {sources.map((source) => (
                       <label key={source} className="cursor-pointer">
@@ -531,7 +533,7 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
 
                 {/* Notes */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Notes</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Notlar (İsteğe Bağlı)</label>
                   <div className="relative">
                     <div className="absolute top-4 left-4 pointer-events-none">
                       <FileText className="h-5 w-5 text-gray-400" />
@@ -540,10 +542,10 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                       {...register("note")}
                       rows={4}
                       className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-none bg-white"
-                      placeholder="Add any additional notes about this opportunity, client requirements, next steps, etc."
+                      placeholder="müşteri gereksinimleri, sonraki adımlar vb. hakkında ek notlar ekleyin."
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">{watchedValues.note?.length || 0} characters</p>
+                  <p className="text-xs text-gray-500 mt-2">{watchedValues.note?.length || 0} karakter</p>
                 </div>
               </div>
             )}
@@ -649,7 +651,12 @@ export default function OpportunityFormModal({ onClose, onSubmit, initialData }:
                   </button>
                 ) : (
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => {
+                      if (currentStep === 3) {
+                        handleSubmit(submitHandler)()
+                      }
+                    }}
                     disabled={!isValid || isSubmitting}
                     className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center space-x-2"
                   >
